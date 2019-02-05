@@ -1,4 +1,5 @@
 import Dependencies._
+import com.typesafe.sbt.packager.docker.Cmd
 import sbtcrossproject.CrossProject
 // shadow sbt-scalajs' crossProject and CrossType until Scala.js 1.0.0 is released
 import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
@@ -79,11 +80,19 @@ lazy val weddingplannerApi = (project in file("api"))
   )
 
 lazy val weddingplannerService = (project in file("service"))
+  .enablePlugins(DockerPlugin).enablePlugins(JDKPackagerPlugin)
   .dependsOn(weddingplannerApi)
   .settings(settings)
   .settings(
     name := "weddingplanner-service",
-    libraryDependencies ++= serviceDeps.value
+    libraryDependencies ++= serviceDeps.value,
+    mainClass in Compile := Some("weddingplanner.server.WeddingPlannerService"),
+    topLevelDirectory := None, // Don't add a root folder to the archive
+    dockerBaseImage := "openjdk:jre-alpine",
+    dockerUpdateLatest := true,
+    dockerExposedPorts := Seq(8080),
+//    dockerUsername := Some("broersen"),
+    packageName in Docker := name.value
   )
 
 val makeSettingsYml = Def.task {
