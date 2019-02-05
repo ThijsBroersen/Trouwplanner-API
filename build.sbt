@@ -91,7 +91,6 @@ lazy val weddingplannerService = (project in file("service"))
     dockerBaseImage := "openjdk:jre-alpine",
     dockerUpdateLatest := true,
     dockerExposedPorts := Seq(8080),
-//    dockerUsername := Some("broersen"),
     packageName in Docker := name.value
   )
 
