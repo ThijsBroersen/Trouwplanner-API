@@ -18,7 +18,8 @@ object Library {
   val scalaCsv        = "com.github.tototoshi" %% "scala-csv"          % "1.3.5"
   val scalaCsvRefined = "com.nrinaudo"         %% "kantan.csv-refined" % "0.5.0"
 
-  val ciris = "is.cir" %% "ciris-core" % "0.12.1"
+  val ciris           = "is.cir" %% "ciris-core"       % "0.12.1"
+  val cirisEnumeratum = "is.cir" %% "ciris-enumeratum" % "0.12.1"
 
   val scalaTest =
     Def.setting("org.scalatest" %%% "scalatest" % "3.0.5" % "test")
@@ -34,5 +35,13 @@ object Dependencies {
     Def.setting(Seq(lspaceServices, lspaceNS, scalaTest.value))
 
   val serviceDeps =
-    Def.setting(Seq(lspaceGraph, lspaceServices, lspaceServicesTests, lspaceNS, ciris, scalaCsv, scalaTest.value))
+    Def.setting(
+      Seq(lspaceGraph,
+          lspaceServices,
+          lspaceServicesTests,
+          lspaceNS,
+          ciris,
+          cirisEnumeratum,
+          scalaCsv,
+          scalaTest.value))
 }

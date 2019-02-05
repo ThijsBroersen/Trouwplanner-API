@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.com/ThijsBroersen/Weddingplanner-API.svg)](https://travis-ci.com/ThijsBroersen/Weddingplanner-API)
+[![codecov](https://codecov.io/gh/ThijsBroersen/Weddingplanner-API/branch/master/graph/badge.svg)](https://codecov.io/gh/ThijsBroersen/Weddingplanner-API)
+
 # The Weddingplanner API
 
 
@@ -16,3 +19,7 @@ libraryDependencies += "nl.thijsbroersen" %% "weddingplanner-{xx}" % "{version}"
 ```
 
 ## Examples
+Run local:
+```
+sbt weddingplannerService/run
+```
