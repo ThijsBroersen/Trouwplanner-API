@@ -18,31 +18,22 @@ import lspace.services.LService
 import lspace.services.rest.endpoints.{JsonLDModule, PagedResult}
 import monix.eval.Task
 import shapeless.{:+:, CNil}
-import weddingplanner.endpoint.{
-  AgendaEndpoint,
-  AppointmentEndpoint,
-  PersonEndpoint,
-  PlaceEndpoint
-}
+import weddingplanner.endpoint.{AgendaEndpoint, AppointmentEndpoint, PersonEndpoint, PlaceEndpoint}
 
 import scala.concurrent.Await
 
 trait WeddingPlannerService extends LService {
-  lazy val agendaGraph: Graph = MemGraph(
-    "https://demo.vng.nl/weddingplanner/agenda")
-  lazy val agendaService = AgendaEndpoint(agendaGraph)
+  lazy val agendaGraph: Graph = MemGraph("https://demo.vng.nl/weddingplanner/agenda")
+  lazy val agendaService      = AgendaEndpoint(agendaGraph)
 
-  lazy val appointmentGraph: Graph = MemGraph(
-    "https://demo.vng.nl/weddingplanner/appointment")
-  lazy val appointmentService = AppointmentEndpoint(appointmentGraph)
+  lazy val appointmentGraph: Graph = MemGraph("https://demo.vng.nl/weddingplanner/appointment")
+  lazy val appointmentService      = AppointmentEndpoint(appointmentGraph)
 
-  lazy val personGraph: Graph = MemGraph(
-    "https://demo.vng.nl/weddingplanner/person")
-  lazy val personService = PersonEndpoint(personGraph)
+  lazy val personGraph: Graph = MemGraph("https://demo.vng.nl/weddingplanner/person")
+  lazy val personService      = PersonEndpoint(personGraph)
 
-  lazy val placeGraph: Graph = MemGraph(
-    "https://demo.vng.nl/weddingplanner/place")
-  lazy val placeService = PlaceEndpoint(placeGraph)
+  lazy val placeGraph: Graph = MemGraph("https://demo.vng.nl/weddingplanner/place")
+  lazy val placeService      = PlaceEndpoint(placeGraph)
 
   val api = agendaService.api :+: appointmentService.api :+: personService.api :+: placeService.api
 
@@ -68,7 +59,7 @@ trait WeddingPlannerService extends LService {
 }
 object WeddingPlannerService extends WeddingPlannerService with TwitterServer {
 
-  lazy val port: Int = 8080
+  lazy val port: Int = 8080 //TODO: from Config
 
   def main(): Unit = {
     val server = Http.server
