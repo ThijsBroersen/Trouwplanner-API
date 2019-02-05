@@ -1,5 +1,4 @@
 import Dependencies._
-import com.typesafe.sbt.packager.docker.Cmd
 import sbtcrossproject.CrossProject
 // shadow sbt-scalajs' crossProject and CrossType until Scala.js 1.0.0 is released
 import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
@@ -46,8 +45,8 @@ lazy val commonSettings = projectSettings ++ Seq(
 
 val dirtyEnd = """(\+\d\d\d\d\d\d\d\d-\d\d\d\d)-SNAPSHOT$""".r
 def stripTime(version: String) = dirtyEnd.findFirstIn(version) match {
-  case Some(end) => version.stripSuffix(end) + "-SNAPSHOT"
-  case None => version
+  case Some(end) => version.stripSuffix(end).replace('+', '-') + "-SNAPSHOT"
+  case None => version.replace('+', '-')
 }
 
 ThisBuild / version ~= stripTime
