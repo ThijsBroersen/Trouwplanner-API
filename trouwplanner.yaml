@@ -1,0 +1,100 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: Wedding-planner Service
+  license:
+    name: MIT
+servers:
+  - url: https://demo.vng.nl/weddingplanner
+paths:
+  /agenda/{id}:
+  /appointment:
+    get:
+      operationId: list
+    post:
+      operationId: create
+  /appointment/{id}:
+    get:
+      operationId: byId
+    put:
+      operationId: replaceById
+    patch:
+      operationId: updateById
+    delete:
+      operationId: removeById
+  /location/:
+  /location/{id}:
+  /people/:
+  /people/{id}:
+components:
+  requestBodies:
+    list:
+      description: request a list of objects
+      content:
+        'application/json':
+        'application/ld+json':
+        'text/plain':
+          examples:
+            user:
+              summary: User example in text plain format
+              externalValue: 'http://foo.bar/examples/user-example.txt'
+        '*/*':
+          examples:
+            user:
+              summary: User example in other format
+              externalValue: 'http://foo.bar/examples/user-example.whatever'
+  schemas:
+    Agenda:
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+    Agendas:
+      type: array
+        items:
+          $ref: "#/components/schemas/Agenda"
+    Appointment:
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+    Appointments:
+      type: array
+      items:
+        $ref: "#/components/schemas/Appointment"
+    Location:
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+    Locations:
+      type: array
+      items:
+        $ref: "#/components/schemas/Location"
+    Person:
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+    People:
+      type: array
+      items:
+        $ref: "#/components/schemas/Person"
+    Error:
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
