@@ -113,7 +113,7 @@ lazy val site = (project in file("site"))
     //    micrositeDocumentationUrl := "/yoursite/docs",
     //    micrositeDocumentationLabelDescription := "Documentation",
     micrositeAuthor := "Thijs Broersen",
-//    micrositeHomepage := "https://..",
+    micrositeHomepage := "https://thijsbroersen.github.io/Weddingplanner-API",
 //    micrositeOrganizationHomepage := "https://..",
     //    micrositeOrganizationHomepage := "",
     excludeFilter in ghpagesCleanSite := //preserves github-settings for custom domain, each time CNAME is written custom domain is reset?
@@ -121,8 +121,8 @@ lazy val site = (project in file("site"))
         def accept(f: File) = (ghpagesRepository.value / "CNAME").getCanonicalPath == f.getCanonicalPath
       } || "versions.html",
     micrositeGithubOwner := "ThijsBroersen",
-    micrositeGithubRepo := "L-spaceThijsBroersen",
-    micrositeGitterChannelUrl := "ThijsBroersen/Trouwplanner-API",
+    micrositeGithubRepo := "Weddingplanner-API",
+    micrositeGitterChannelUrl := "ThijsBroersen/Weddingplanner-API",
     micrositeFooterText := Some(
       "")
   )
