@@ -4,22 +4,23 @@ import org.portablescala.sbtplatformdeps.PlatformDepsPlugin.autoImport._
 // Versions
 object Version {
   val scala       = "2.12.8"
-  val lspace      = "0.3.0.1"
-  val `ns.lspace` = "0.0.6.1"
+  val lspace      = "0.3.1.2"
+  val `ns.lspace` = "0.0.6.3"
 }
 
 // Libraries
 object Library {
-  val lspaceGraph         = "eu.l-space" %% "lspace-graph"    % Version.lspace
-  val lspaceServices      = "eu.l-space" %% "lspace-services" % Version.lspace
-  val lspaceServicesTests = "eu.l-space" %% "lspace-services" % Version.lspace % "test" classifier "tests"
-  val lspaceNS            = "eu.l-space" %% "lspace-ns"       % Version.`ns.lspace`
+  val lspaceGraph         = "eu.l-space" %% "lspace-graph"          % Version.lspace
+  val lspaceParseArgonaut = "eu.l-space" %% "lspace-parse-argonaut" % Version.lspace
+  val lspaceServices      = "eu.l-space" %% "lspace-services"       % Version.lspace
+  val lspaceServicesTests = "eu.l-space" %% "lspace-services"       % Version.lspace % "test" classifier "tests"
+  val lspaceNS            = "eu.l-space" %% "lspace-ns"             % Version.`ns.lspace`
 
   val scalaCsv        = "com.github.tototoshi" %% "scala-csv"          % "1.3.5"
   val scalaCsvRefined = "com.nrinaudo"         %% "kantan.csv-refined" % "0.5.0"
 
-  val ciris           = "is.cir" %% "ciris-core"       % "0.12.1"
-  val cirisEnumeratum = "is.cir" %% "ciris-enumeratum" % "0.12.1"
+  val pureconfig        = "com.github.pureconfig" %% "pureconfig"         % "0.10.2"
+  val pureconfigGeneric = "com.github.pureconfig" %% "pureconfig-generic" % "0.10.2"
 
   val scalaTest =
     Def.setting("org.scalatest" %%% "scalatest" % "3.0.5" % "test")
@@ -37,11 +38,12 @@ object Dependencies {
   val serviceDeps =
     Def.setting(
       Seq(lspaceGraph,
+          lspaceParseArgonaut,
           lspaceServices,
           lspaceServicesTests,
           lspaceNS,
-          ciris,
-          cirisEnumeratum,
+          pureconfig,
+          pureconfigGeneric,
           scalaCsv,
           scalaTest.value))
 }

@@ -67,7 +67,9 @@ jobs:
         local-dir: site/target/jekyll
         target-branch: gh-pages
 #    - stage: release
-#      name: "Cross-publish to Sonatype"
+#      name: "Cross-publish to Sonatype and docker"
+#      name: "Publish to dockerhub"
+#      services: docker
 #      before_install: git fetch --tags
 #      script: sbt ci-release
 #      cache:

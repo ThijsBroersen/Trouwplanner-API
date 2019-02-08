@@ -1,4 +1,5 @@
 import Dependencies._
+import com.typesafe.sbt.packager.docker._
 import sbtcrossproject.CrossProject
 // shadow sbt-scalajs' crossProject and CrossType until Scala.js 1.0.0 is released
 import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
@@ -87,9 +88,22 @@ lazy val weddingplannerService = (project in file("service"))
     libraryDependencies ++= serviceDeps.value,
     mainClass in Compile := Some("weddingplanner.server.WeddingPlannerService"),
     topLevelDirectory := None, // Don't add a root folder to the archive
-    dockerBaseImage := "openjdk:jre-alpine",
+    dockerBaseImage := "openjdk:11-jre",
     dockerUpdateLatest := true,
-    dockerExposedPorts := Seq(8080),
+//    dockerExposedPorts := Seq(8080),
+    daemonUser in Docker := "librarian",
+//    daemonUserUid in Docker := Some(1000),
+//    daemonGroup in Docker := "librarian",
+//    daemonGroupGid in Docker := Some(1000),
+    dockerCommands ++= Seq(
+      Cmd("USER", "root"),
+      ExecCmd("RUN", "usermod", "-u", "1000", "librarian"),
+//      ExecCmd("RUN", "groupadd", "-g", "1000", "librarian"),
+//      ExecCmd("RUN", "groupmod", "-g", "1000", "librarian"),
+      Cmd("USER", "librarian")
+    ),
+    killTimeout := 5,
+    termTimeout := 10,
     packageName in Docker := name.value
   )
 
@@ -111,25 +125,21 @@ lazy val site = (project in file("site"))
     makeMicrosite := (makeMicrosite dependsOn makeSettingsYml).value
   )
   .settings(
-    micrositeName := "Trouwplanner-API",
-    micrositeDescription := "Services voor het trouwproces.",
+    micrositeName := "Weddingplanner-API",
+    micrositeDescription := "Services for planning a wedding (location, wedding official etc.",
     micrositeDataDirectory := (resourceManaged in Compile).value / "site" / "data",
     //    unmanagedResources ++= Seq(
     //
     //    ),
     //    micrositeDocumentationUrl := "/yoursite/docs",
     //    micrositeDocumentationLabelDescription := "Documentation",
+    micrositeUrl := "https://thijsbroersen.github.io",
+    micrositeBaseUrl := "/Weddingplanner-API",
     micrositeAuthor := "Thijs Broersen",
-    micrositeHomepage := "https://thijsbroersen.github.io/Weddingplanner-API",
-//    micrositeOrganizationHomepage := "https://..",
-    //    micrositeOrganizationHomepage := "",
-    excludeFilter in ghpagesCleanSite := //preserves github-settings for custom domain, each time CNAME is written custom domain is reset?
-      new FileFilter{
-        def accept(f: File) = (ghpagesRepository.value / "CNAME").getCanonicalPath == f.getCanonicalPath
-      } || "versions.html",
+    micrositeHomepage := "https://thijsbroersen.github.io/Weddingplanner-API/",
     micrositeGithubOwner := "ThijsBroersen",
     micrositeGithubRepo := "Weddingplanner-API",
-    micrositeGitterChannelUrl := "ThijsBroersen/Weddingplanner-API",
+    micrositeGitterChannel := true,
     micrositeFooterText := Some(
       "")
   )

@@ -1,0 +1,13 @@
+version: '3.7'
+services:
+  weddingplanner:
+    container_name: weddingplanner
+    image: weddingplanner-service:latest
+    ports:
+      - '8080:8080'
+      - '9990:9990'
+    environment:
+      - "WEDDING_CONFIG=/home/librarian/conf/application.conf"
+    volumes:
+      - ./conf:/home/librarian/conf:ro
+      - ./data:/home/librarian/graph
