@@ -1,71 +1,66 @@
 package weddingplanner.server
 
-import argonaut.{EncodeJson, Json, PrettyParams}
 import cats.effect.IO
 import com.twitter.finagle.{Http, Service}
-import com.twitter.finagle.http.{Request, Response, Status}
+import com.twitter.finagle.http.{Request, Response}
 import com.twitter.finagle.param.Stats
-import com.twitter.io.Buf
 import com.twitter.server.TwitterServer
-import io.finch
-import io.finch.{Bootstrap, Endpoint, Ok, Output}
+import io.finch.{Application, Bootstrap, Endpoint}
 import lspace.encode.EncodeJsonLD
-import lspace.librarian.provider.mem.MemGraph
 import lspace.librarian.structure._
-import lspace.parse.{ActiveContext, JsonLD}
+import lspace.services.codecs.{Application => LApplication}
 import lspace.ns._
 import lspace.services.LService
-import lspace.services.rest.endpoints.{JsonLDModule, PagedResult}
 import monix.eval.Task
-import shapeless.{:+:, CNil}
+import shapeless.{:+:, CNil, HNil}
 import weddingplanner.endpoint.{AgendaEndpoint, AppointmentEndpoint, PersonEndpoint, PlaceEndpoint}
 
 import scala.concurrent.Await
 
 trait WeddingPlannerService extends LService {
-  lazy val agendaGraph: Graph = MemGraph("https://demo.vng.nl/weddingplanner/agenda")
+  lazy val agendaGraph: Graph = ServicesConfig.config.agendaGraph.toGraph
   lazy val agendaService      = AgendaEndpoint(agendaGraph)
 
-  lazy val appointmentGraph: Graph = MemGraph("https://demo.vng.nl/weddingplanner/appointment")
+  lazy val appointmentGraph: Graph = ServicesConfig.config.appointmentGraph.toGraph
   lazy val appointmentService      = AppointmentEndpoint(appointmentGraph)
 
-  lazy val personGraph: Graph = MemGraph("https://demo.vng.nl/weddingplanner/person")
+  lazy val personGraph: Graph = ServicesConfig.config.personGraph.toGraph
   lazy val personService      = PersonEndpoint(personGraph)
 
-  lazy val placeGraph: Graph = MemGraph("https://demo.vng.nl/weddingplanner/place")
+  lazy val placeGraph: Graph = ServicesConfig.config.placeGraph.toGraph
   lazy val placeService      = PlaceEndpoint(placeGraph)
 
-  val api = agendaService.api :+: appointmentService.api :+: personService.api :+: placeService.api
-
-  import JsonLDModule.Encode._
-  import EncodeJsonLD._
-  import lspace.encode.EncodeJsonLD._
-
-  implicit def pagedResultToJsonLD =
-    new EncodeJsonLD[PagedResult] {
-      val encode: PagedResult => Json = {
-        case pr: PagedResult =>
-          Json.jObject(
-            JsonLD.detached.encode
-              .fromAny(pr.result)(ActiveContext())
-              .withContext)
-      }
+  object utils extends Endpoint.Module[IO] {
+    val persist: Endpoint[IO, Unit] = get("_persist") {
+      scribe.info("persisting all graphs")
+      agendaGraph.persist
+      appointmentGraph.persist
+      personGraph.persist
+      placeGraph.persist
+      io.finch.Ok()
     }
+  }
+
+  val api = agendaService.api :+: appointmentService.api :+: personService.api :+: placeService.api :+: utils.persist
+
+  implicit val encoder = lspace.codec.argonaut.Encoder
+  import lspace.services.codecs.Encode._
+  import lspace.encode.EncodeJson._
+  import lspace.encode.EncodeJsonLD._
 
   lazy val service: Service[Request, Response] = Bootstrap
     .configure(enableMethodNotAllowed = true, enableUnsupportedMediaType = true)
-    .serve[JsonLDModule.JsonLD :+: CNil](api)
+    .serve[LApplication.JsonLD :+: Application.Json :+: CNil](api)
     .toService
 }
-object WeddingPlannerService extends WeddingPlannerService with TwitterServer {
 
-  lazy val port: Int = 8080 //TODO: from Config
+object WeddingPlannerService extends WeddingPlannerService with TwitterServer {
 
   def main(): Unit = {
     val server = Http.server
-//      .configured(Stats(statsReceiver))
+      .configured(Stats(statsReceiver))
       .serve(
-        s":$port",
+        s":${ServicesConfig.config.port.value}",
         service
       )
 

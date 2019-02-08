@@ -1,13 +1,16 @@
 package weddingplanner.server
 
+import argonaut._
+import argonaut.Argonaut._
 import com.twitter.finagle.http.Status
 import io.finch.Input
-import lspace.librarian.structure.Ontology
+import io.finch.Application
+import io.finch.argonaut.preserveOrder._
+import lspace.codec.argonaut.Encoder
+import lspace.librarian.provider.detached.DetachedGraph
 import lspace.services.{LService, LServiceSpec}
-import org.scalatest.{AsyncWordSpec, BeforeAndAfterAll, Matchers}
-import weddingplanner.ns.{Agenda, Appointment, Person, Place}
-
-import scala.concurrent.Future
+import org.scalatest.BeforeAndAfterAll
+import weddingplanner.ns.Agenda
 
 class WeddingPlannerServiceSpec extends LServiceSpec with BeforeAndAfterAll {
 
@@ -20,51 +23,33 @@ class WeddingPlannerServiceSpec extends LServiceSpec with BeforeAndAfterAll {
     WeddingPlannerService.personService.service.labeledApiTests
     WeddingPlannerService.placeService.service.labeledApiTests
 
-//    "have an Agenda-api" in {
-//      val input = Input
-//        .get("/Agenda/")
-//        .withHeaders("Accept" -> "application/ld+json")
-//      val res = WeddingPlannerServer.api(input.request)
-//
-//      res.map { response =>
-//        val headers = response.headerMap
-//        response.status shouldBe Status.Ok
-//        response.contentType shouldBe Some("application/ld+json")
-//      }
-//    }
-//    "have an Appointment-api" in {
-//      val input = Input
-//        .get("/Appointment/")
-//        .withHeaders("Accept" -> "application/ld+json")
-//      val res = WeddingPlannerServer.api(input.request)
-//
-//      res.map { response =>
-//        response.status shouldBe Status.Ok
-//        response.contentType shouldBe Some("application/ld+json")
-//      }
-//    }
-//    "have an Person-api" in {
-//      val input = Input
-//        .get("/Appointment/")
-//        .withHeaders("Accept" -> "application/ld+json")
-//      val res = WeddingPlannerServer.api(input.request)
-//
-//      res.map { response =>
-//        response.status shouldBe Status.Ok
-//        response.contentType shouldBe Some("application/ld+json")
-//      }
-//    }
-//    "have an Place-api" in {
-//      val input = Input
-//        .get("/Appointment/")
-//        .withHeaders("Accept" -> "application/ld+json")
-//      val res = WeddingPlannerServer.api(input.request)
-//
-//      res.map { response =>
-//        response.status shouldBe Status.Ok
-//        response.contentType shouldBe Some("application/ld+json")
-//      }
-//    }
+    val label = WeddingPlannerService.agendaService.service.label
+    s"have an $label-api which accepts json" in {
+      val node = DetachedGraph.nodes.create(Agenda.ontology)
+      node --- Agenda.keys.name --> "Alice"
+      import lspace.services.util._
+      val input = Input
+        .post(s"/agenda/")
+        .withBody[Application.Json](
+          node
+            .outEMap()
+            .map {
+              case (property, edges) =>
+                property.label("en") -> (edges match {
+                  case List(e) => Encoder.fromAny(e.to, Some(e.to.labels.head))(Encoder.getNewActiveContext).json
+                })
+            }
+            .asJson)
+        .withHeaders("Accept" -> "application/json")
+      val res = lservice.service(input.request)
+
+      res.map { response =>
+        val headers = response.headerMap
+        response.status shouldBe Status.Created
+        response.contentType shouldBe Some("application/json")
+      }
+    }
+
     "not have an unknown IDONOTEXIST-api" in {
       import lspace.services.util._
       val input = Input
