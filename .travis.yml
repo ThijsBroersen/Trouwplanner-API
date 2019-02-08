@@ -8,8 +8,8 @@ stages:
     if: (branch = master AND type = push) OR (tag IS present)
   - name: publish pages
     if: (branch = master AND type = push) OR (tag IS present)
-#  - name: release
-#    if: (branch = master AND type = push) OR (tag IS present)
+  - name: release
+    if: (branch = master AND type = push) OR (tag IS present)
 jobs:
   include:
     - stage: test
@@ -66,17 +66,20 @@ jobs:
           branch: master
         local-dir: site/target/jekyll
         target-branch: gh-pages
-#    - stage: release
+    - stage: release
 #      name: "Cross-publish to Sonatype and docker"
-#      name: "Publish to dockerhub"
+      name: "Publish to dockerhub"
 #      services: docker
-#      before_install: git fetch --tags
+      before_install: git fetch --tags
 #      script: sbt ci-release
-#      cache:
-#        directories:
-#          - $HOME/.ivy2/cache
-#          - $HOME/.sbt
-#          - $HOME/.coursier
+      script:
+        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+        - sbt weddingplannerService/docker:publish
+      cache:
+        directories:
+          - $HOME/.ivy2/cache
+          - $HOME/.sbt
+          - $HOME/.coursier
 before_cache:
   - find $HOME/.sbt -name "*.lock" -type f -delete
   - find $HOME/.ivy2/cache -name "ivydata-*.properties" -type f -delete

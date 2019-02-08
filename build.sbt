@@ -104,6 +104,8 @@ lazy val weddingplannerService = (project in file("service"))
     ),
     killTimeout := 5,
     termTimeout := 10,
+    dockerUsername := Some("broersen"),
+    maintainer in Docker := "Thijs Broersen",
     packageName in Docker := name.value
   )
 
@@ -133,7 +135,7 @@ lazy val site = (project in file("site"))
     //    ),
     //    micrositeDocumentationUrl := "/yoursite/docs",
     //    micrositeDocumentationLabelDescription := "Documentation",
-    micrositeUrl := "https://thijsbroersen.github.io",
+//    micrositeUrl := "https://thijsbroersen.github.io",
     micrositeBaseUrl := "/Weddingplanner-API",
     micrositeAuthor := "Thijs Broersen",
     micrositeHomepage := "https://thijsbroersen.github.io/Weddingplanner-API/",
