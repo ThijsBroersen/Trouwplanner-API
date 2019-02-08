@@ -37,7 +37,7 @@ trait WeddingPlannerService extends LService {
       appointmentGraph.persist
       personGraph.persist
       placeGraph.persist
-      io.finch.Ok()
+      io.finch.NoContent[Unit]
     }
   }
 
