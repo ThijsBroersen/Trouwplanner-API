@@ -22,3 +22,12 @@ libraryDependencies += "nl.thijsbroersen" %% "weddingplanner-{xx}" % "{version}"
 ```
 
 ## Examples
+Run local:
+```
+sbt weddingplannerService/run
+```
+or with docker:
+```
+cd examples
+docker-compose up
+```
