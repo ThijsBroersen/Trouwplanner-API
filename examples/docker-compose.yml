@@ -2,7 +2,7 @@ version: '3.7'
 services:
   weddingplanner:
     container_name: weddingplanner
-    image: weddingplanner-service:latest
+    image: broersen/weddingplanner-service:latest
     ports:
       - '8080:8080'
       - '9990:9990'
