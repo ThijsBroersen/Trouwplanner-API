@@ -58,9 +58,8 @@ jobs:
           - /home/travis/.rvm/
       deploy:
         provider: pages
-        skip-cleanup: true
-        keep-history: true
-        fqdn: thijsbroersen.github.io
+#        skip-cleanup: true
+#        keep-history: true
         github-token: $GITHUB_TOKEN
         on:
           branch: master
@@ -80,6 +79,11 @@ jobs:
           - $HOME/.ivy2/cache
           - $HOME/.sbt
           - $HOME/.coursier
+#      deploy:
+#        provider: gae
+#        keyfile:
+#        project: weddingplanner
+#        config: app.yaml
 before_cache:
   - find $HOME/.sbt -name "*.lock" -type f -delete
   - find $HOME/.ivy2/cache -name "ivydata-*.properties" -type f -delete
