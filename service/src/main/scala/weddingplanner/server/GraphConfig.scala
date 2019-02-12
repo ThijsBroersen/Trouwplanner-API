@@ -8,6 +8,8 @@ import lspace.librarian.provider.mem.MemGraph
 sealed trait GraphConfig
 
 object GraphConfig {
+  import lspace.codec.argonaut._
+
   implicit class WithGraphConfig(config: GraphConfig) {
     def toGraph = config match {
       case conf: MemGraphConfig  => MemGraph(conf.name)

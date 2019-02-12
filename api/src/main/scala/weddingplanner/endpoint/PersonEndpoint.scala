@@ -6,8 +6,8 @@ import lspace.librarian.structure.Graph
 import lspace.services.rest.endpoints.LabeledNodeApi
 import weddingplanner.ns.Person
 
-case class PersonEndpoint(graph: Graph) extends Endpoint.Module[IO] {
-  val service = LabeledNodeApi(Person.ontology)(graph)
+case class PersonEndpoint(graph: Graph)(implicit ndecoder: lspace.codec.NativeTypeDecoder) extends Endpoint.Module[IO] {
+  val service = LabeledNodeApi(Person.ontology)(graph, ndecoder)
   //  val api = service.labeledApi
   val api = service.label :: service.api
 }

@@ -18,6 +18,8 @@ import weddingplanner.endpoint.{AgendaEndpoint, AppointmentEndpoint, PersonEndpo
 import scala.concurrent.Await
 
 trait WeddingPlannerService extends LService {
+  import lspace.codec.argonaut._
+
   lazy val agendaGraph: Graph = ServicesConfig.config.agendaGraph.toGraph
   lazy val agendaService      = AgendaEndpoint(agendaGraph)
 
@@ -43,9 +45,10 @@ trait WeddingPlannerService extends LService {
 
   val api = agendaService.api :+: appointmentService.api :+: personService.api :+: placeService.api :+: utils.persist
 
-  implicit val encoder = lspace.codec.argonaut.Encoder
+  implicit val encoder: lspace.codec.Encoder = lspace.codec.Encoder(nativeEncoder)
   import lspace.services.codecs.Encode._
-  import lspace.encode.EncodeJson._
+//  import lspace.encode.EncodeJson._
+  import EncodeJson._
   import lspace.encode.EncodeJsonLD._
 
   lazy val service: Service[Request, Response] = Bootstrap

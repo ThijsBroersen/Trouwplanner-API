@@ -1,12 +1,9 @@
 package weddingplanner.server
 
-import argonaut._
-import argonaut.Argonaut._
 import com.twitter.finagle.http.Status
 import io.finch.Input
 import io.finch.Application
-import io.finch.argonaut.preserveOrder._
-import lspace.codec.argonaut.Encoder
+import lspace.codec.ActiveContext
 import lspace.librarian.provider.detached.DetachedGraph
 import lspace.services.{LService, LServiceSpec}
 import org.scalatest.BeforeAndAfterAll
@@ -16,6 +13,12 @@ class WeddingPlannerServiceSpec extends LServiceSpec with BeforeAndAfterAll {
 
   implicit val lservice: LService = WeddingPlannerService
   println(WeddingPlannerService.api.toString)
+
+  import lspace.codec.argonaut._
+  val encoder: lspace.codec.Encoder = lspace.codec.Encoder(nativeEncoder)
+  import encoder._
+  import lspace.encode.EncodeJson._
+  import lspace.services.codecs.Encode._
 
   "The Wedding-planner" must {
     WeddingPlannerService.agendaService.service.labeledApiTests
@@ -36,10 +39,11 @@ class WeddingPlannerServiceSpec extends LServiceSpec with BeforeAndAfterAll {
             .map {
               case (property, edges) =>
                 property.label("en") -> (edges match {
-                  case List(e) => Encoder.fromAny(e.to, Some(e.to.labels.head))(Encoder.getNewActiveContext).json
+                  case List(e) => encoder.fromAny(e.to, Some(e.to.labels.head))(ActiveContext()).json
                 })
             }
-            .asJson)
+            .asJson
+            .noSpaces)
         .withHeaders("Accept" -> "application/json")
       val res = lservice.service(input.request)
 
