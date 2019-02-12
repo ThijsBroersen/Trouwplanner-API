@@ -83,6 +83,7 @@ lazy val weddingplannerService = (project in file("service"))
   .enablePlugins(DockerPlugin).enablePlugins(JDKPackagerPlugin)
   .dependsOn(weddingplannerApi)
   .settings(settings)
+  .settings(skip in publish := true)
   .settings(
     name := "weddingplanner-service",
     libraryDependencies ++= serviceDeps.value,
