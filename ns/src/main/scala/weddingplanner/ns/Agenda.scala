@@ -9,18 +9,16 @@ import lspace.librarian.structure.Property
 import lspace.librarian.structure.PropertyDef
 
 object Agenda
-    extends OntologyDef(
-      "sptth://example.test/Agenda",
-      label = "Agenda",
-      comment = "An appointment diary",
-      `@extends` = () => Generic.CreativeWork.ontology :: Nil) {
+    extends OntologyDef("sptth://example.test/Agenda",
+                        label = "Agenda",
+                        comment = "An appointment diary",
+                        `@extends` = () => Generic.CreativeWork.ontology :: Nil) {
 
   object keys extends Generic.CreativeWork.Properties {
     object owner
         extends PropertyDef(ontology.iri + "/owner",
                             label = "owner",
-                            comment =
-                              "A person or organization who owns something.",
+                            comment = "A person or organization who owns something.",
                             `@range` = () => User.ontology :: Nil)
     object appointment
         extends PropertyDef(ontology.iri + "/appointment",
@@ -30,8 +28,8 @@ object Agenda
   override lazy val properties
     : List[Property] = keys.owner.property :: keys.appointment.property :: Generic.CreativeWork.properties
   trait Properties {
-    val owner = keys.owner
-    val appointment = keys.appointment
+    lazy val owner       = keys.owner
+    lazy val appointment = keys.appointment
   }
 
 }

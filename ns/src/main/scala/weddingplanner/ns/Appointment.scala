@@ -2,6 +2,8 @@ package weddingplanner.ns
 
 import java.time.Instant
 
+import lspace.NS.vocab
+import lspace.librarian.datatype.DateTimeType
 import lspace.librarian.structure.OntologyDef
 import lspace.librarian.structure.Property
 import lspace.librarian.structure.PropertyDef
@@ -15,20 +17,33 @@ object Appointment
     ) {
 
   object keys extends Generic.CreativeWork.Properties {
-    object agenda
-        extends PropertyDef(ontology.iri + "/agenda",
-                            label = "agenda",
-                            `@range` = () => Agenda.ontology :: Nil)
+    object startDate
+        extends PropertyDef(
+          vocab.schema + "startDate",
+          label = "startDate",
+          comment = "The start date and time of the item (in ISO 8601 date format).",
+          `@range` = () => DateTimeType.datatype :: Nil
+        )
+    object endDate
+        extends PropertyDef(
+          vocab.schema + "endDate",
+          label = "endDate",
+          comment = "The end date and time of the item (in ISO 8601 date format).",
+          `@range` = () => DateTimeType.datatype :: Nil
+        )
   }
   override lazy val properties
-    : List[Property] = keys.agenda.property :: Generic.CreativeWork.properties
+    : List[Property] = keys.startDate.property :: keys.endDate.property :: Generic.CreativeWork.properties
   trait Properties extends Generic.CreativeWork.Properties {
-    val agenda = keys.agenda
+    lazy val startDate = keys.startDate
+    lazy val endDate   = keys.endDate
   }
 }
 
 case class Appointment(id: Option[Int],
-                       agenda: Agenda,
                        name: String,
+                       description: String,
+                       startDate: Instant,
+                       endDate: Instant,
                        dateCreated: Instant,
                        dateModified: Option[Instant])
