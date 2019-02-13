@@ -7,7 +7,20 @@ info:
 servers:
   - url: https://demo.vng.nl/weddingplanner
 paths:
+  /agenda/:
+    get:
+      operationId: list
+    post:
+      operationId: create
   /agenda/{id}:
+    get:
+      operationId: byId
+    put:
+      operationId: replaceById
+    patch:
+      operationId: updateById
+    delete:
+      operationId: removeById
   /appointment:
     get:
       operationId: list
@@ -23,9 +36,33 @@ paths:
     delete:
       operationId: removeById
   /location/:
+    get:
+      operationId: list
+    post:
+      operationId: create
   /location/{id}:
+    get:
+      operationId: byId
+    put:
+      operationId: replaceById
+    patch:
+      operationId: updateById
+    delete:
+      operationId: removeById
   /people/:
+    get:
+      operationId: list
+    post:
+      operationId: create
   /people/{id}:
+    get:
+      operationId: byId
+    put:
+      operationId: replaceById
+    patch:
+      operationId: updateById
+    delete:
+      operationId: removeById
 components:
   requestBodies:
     list:
