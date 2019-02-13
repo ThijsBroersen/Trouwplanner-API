@@ -61,7 +61,7 @@ object WeddingPlannerService extends WeddingPlannerService with TwitterServer {
 
   def main(): Unit = {
     val server = Http.server
-      .configured(Stats(statsReceiver))
+//      .configured(Stats(statsReceiver))
       .serve(
         s":${ServicesConfig.config.port.value}",
         service
