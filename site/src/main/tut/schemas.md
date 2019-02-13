@@ -13,7 +13,7 @@ position: 2
   
 ## Overview
 ## Agenda
-```json:evaluated
+```json
 {
   "@id": "sptth://example.test/Agenda",
   "@type": "@class",
@@ -114,7 +114,7 @@ position: 2
 }
 ```
 ## Appointment
-```json:evaluated
+```json
 {
   "@id": "sptth://example.test/Appointment",
   "@type": "@class",
@@ -139,7 +139,7 @@ position: 2
 }
 ```
 ## Person
-```json:evaluated
+```json
 {
   "@id": "https://schema.org/Person",
   "@type": "@class",
@@ -163,7 +163,7 @@ position: 2
 }
 ```
 ## Place
-```json:evaluated
+```json
 {
   "@id": "https://schema.org/Place",
   "@type": "@class",
