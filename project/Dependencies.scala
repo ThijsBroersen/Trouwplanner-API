@@ -4,7 +4,7 @@ import org.portablescala.sbtplatformdeps.PlatformDepsPlugin.autoImport._
 // Versions
 object Version {
   val scala       = "2.12.8"
-  val lspace      = "0.4.0.2"
+  val lspace      = "0.4.0.3"
   val `ns.lspace` = "0.0.6.4"
 }
 
@@ -30,7 +30,7 @@ object Dependencies {
   import Library._
 
   val nsDeps =
-    Def.setting(Seq(lspaceServices, lspaceNS, scalaTest.value))
+    Def.setting(Seq(lspaceNS, scalaTest.value))
 
   val apiDeps =
     Def.setting(Seq(lspaceServices, lspaceNS, scalaTest.value))
