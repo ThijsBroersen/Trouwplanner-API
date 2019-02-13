@@ -13,10 +13,9 @@ object EncodeJson {
         .outEMap()
         .map {
           case (`@id`, id) =>
-            `@id`.iri -> encoder.textToJson(
-              id.head.to.value.toString.reverse
-                .takeWhile(_ != '/')
-                .reverse) //id.head.to.value.toString.stripPrefix(node.graph.iri + "/").asJson
+            `@id`.iri -> encoder.textToJson(id.head.value.toString) //head.to.value.toString.reverse
+//                .takeWhile(_ != '/')
+//                .reverse) //id.head.to.value.toString.stripPrefix(node.graph.iri + "/").asJson
           case (property, edges) =>
             property.label.get("en").getOrElse(property.iri) -> (edges match {
               case List(edge) =>
