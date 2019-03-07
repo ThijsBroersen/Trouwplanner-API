@@ -16,6 +16,7 @@ services:
   nginx:
     depends_on:
       - db
+      - weddingplanner
     image: nginx:latest
     ports:
         - "80:80"
