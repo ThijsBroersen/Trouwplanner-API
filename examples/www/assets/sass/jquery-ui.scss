@@ -1,0 +1,29 @@
+@charset "UTF-8";
+
+@import "jquery-ui/variables";
+@import "jquery-ui/mixins";
+
+@import "jquery-ui/core/helpers";
+@import "jquery-ui/core/widgets";
+@import "jquery-ui/core/states";
+@import "jquery-ui/core/icons";
+@import "jquery-ui/core/corner";
+
+@import "jquery-ui/components/draggable";
+@import "jquery-ui/components/resizable";
+@import "jquery-ui/components/selectable";
+@import "jquery-ui/components/sortable";
+
+@import "jquery-ui/widgets/accordion";
+@import "jquery-ui/widgets/autocomplete";
+@import "jquery-ui/widgets/button";
+@import "jquery-ui/widgets/buttonset";
+@import "jquery-ui/widgets/datepicker";
+@import "jquery-ui/widgets/dialog";
+@import "jquery-ui/widgets/menu";
+@import "jquery-ui/widgets/progressbar";
+@import "jquery-ui/widgets/selectmenu";
+@import "jquery-ui/widgets/slider";
+@import "jquery-ui/widgets/spinner";
+@import "jquery-ui/widgets/tabs";
+@import "jquery-ui/widgets/tooltip";

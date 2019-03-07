@@ -1,0 +1,134 @@
+@import "bootstrap";
+@import "jquery-ui";
+@import "variables";
+
+@import "responsive-tabs";
+
+html, body { background-color: $gray-100; margin:0; padding:0; height:100%; font:Georgia, Serif; }
+.container { padding-left:20px; padding-right:20px; }
+a {
+	color: $link-color;
+	text-decoration: none;
+	background-color: transparent;
+	-webkit-text-decoration-skip: objects;
+	&:hover {
+		color: $link-color-alt;
+		text-decoration: underline;
+	}
+}
+
+// Header
+.header--bar { 
+	background-color:$theme-color;
+	color:$theme-color-text; 
+	position: relative;
+	z-index: 10;
+	padding: 10px 0; 
+	box-shadow: 0 0 10px 0 #000000;
+}
+.header--title { font-size:2rem; }
+
+// Page styling
+.section--page {
+	display:none;
+	height: 100%;
+    // overflow-y: scroll; // Only on mobile?
+	&.active {
+		display:block;
+	}
+}
+.page--holder { 
+	background-color:#FFFFFF;
+	padding-top:20px;
+	padding-bottom:20px;
+}
+
+// Button styles
+.btn {
+	&.btn-default {
+		background-color:$gray-200;
+		border: 1px solid $gray-400;
+		.fa-play {
+			font-size: 1rem;
+    		margin-right: 5px;
+		}
+	}
+}
+
+#availability-calendar {
+	position:relative;
+	z-index: 500;
+	.ui-datepicker {
+		margin-bottom: 0;
+	}
+}
+
+// wepl_table
+.wepl_table {
+	width: 100%;
+	position:relative;
+	text-align: center;
+	td {
+		border-top:0;
+	}
+}
+.wepl_table--container {
+	padding-top: 5px;
+	margin-top: -5px;
+	background-color:$gray-100;
+	border: 1px solid $gray-300;
+	border-radius: 0 0 5px 5px;
+	z-index:1;
+}
+.wepl_table--timeslots {
+	td {
+		padding: 10px 5px 10px 5px;
+		strong { display: block; line-height:1rem; }
+	}
+}
+.wepl_table--head {
+	th {
+		text-align: right;
+		color: $gray-500;
+		text-shadow: 1px 1px #FFFFFF;
+		width: 200px;
+	}
+	td, th {
+		padding: 5px 10px;
+		background-color: $gray-200;
+	}
+}
+
+.wepl_table--options {
+	th {
+		text-align: right;
+		border-color: $gray-300;
+		border-width:1px 1px 1px 0;
+		border-style: solid;
+		padding: 5px 10px;
+	}
+	td {
+		cursor: pointer;
+		background-color:#FFFFFF;
+		border:1px solid $gray-300;
+		&:last-child {
+			border-right-width: 0;
+		}
+		&:hover {
+			background-color: $theme-color;
+		}
+		&.selected {
+			background-color: $selected-color;
+		}
+		&.selected--col {
+			background-color: $selected-color-alt;
+			&:hover {
+				background-color: $selected-color;
+			}
+		}
+		&.blocked {
+			cursor: default;
+			background-color: $gray-200 !important;
+		}
+	}
+}

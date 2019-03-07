@@ -1,0 +1,54 @@
+// Responsive tabs
+.r-tabs .r-tabs-tab { display: inline-block; margin: 0; list-style: none; }
+.r-tabs .r-tabs-panel { padding: 15px; display: none; }
+.r-tabs .r-tabs-accordion-title { display: none; }
+.r-tabs .r-tabs-panel.r-tabs-state-active { display: block; }
+
+.r-tabs {
+
+	.r-tabs-nav {
+		display: table;
+		border-collapse: collapse;
+    	width: 100%;
+		margin: 0 0 -1px 0;
+		padding: 0;
+	}
+	.r-tabs-tab {
+		display: table-cell;
+		border-width: 1px;
+		border-style:solid;
+		border-color:$theme-color;
+		background-color:#FFFFFF;
+		z-index: 10;
+		.fas {
+			margin-right:3px;
+		}
+		a {
+			font-weight: 600;
+			background-color:$gray-100;
+			display: block;
+			width: 100%;
+			padding: 10px 15px 13px 15px;
+    		border-top: 3px solid $gray-100;
+		}
+		&.r-tabs-state-active {
+			border-bottom-width:0;
+			a {
+				background-color:#FFFFFF;
+				border-top-color: $theme-color;
+			}
+		}
+	}
+	.r-tabs-panel {
+		border:1px solid $theme-color;
+		border-width: 0 1px 1px 1px;
+	}
+}
+
+/* Accordion responsive breakpoint */
+@media only screen and (max-width: 768px) {
+    
+    .r-tabs .r-tabs-nav { display:none; }
+    .r-tabs .r-tabs-accordion-title { display: block; }
+
+}
