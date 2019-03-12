@@ -25,6 +25,8 @@ class WeddingPlannerServiceSpec extends LServiceSpec with BeforeAndAfterAll {
     WeddingPlannerService.appointmentService.service.labeledApiTests
     WeddingPlannerService.personService.service.labeledApiTests
     WeddingPlannerService.placeService.service.labeledApiTests
+    WeddingPlannerService.reportToMarriageService.service.labeledApiTests
+    WeddingPlannerService.weddingReservationService.service.labeledApiTests
 
     val label = WeddingPlannerService.agendaService.service.label
     s"have an $label-api which accepts json" in {
@@ -75,6 +77,27 @@ class WeddingPlannerServiceSpec extends LServiceSpec with BeforeAndAfterAll {
 
       res.map { response =>
         response.status shouldBe Status.Ok
+      }
+    }
+
+    "reset the graph on /clear" in {
+      import lspace.services.util._
+      val input = Input
+        .get("/clear")
+        .withHeaders("Accept" -> "application/json")
+      val res = WeddingPlannerService.service(input.request)
+
+      res.flatMap { response =>
+        Thread.sleep(2000)
+        val input = Input
+          .get("/person")
+          .withHeaders("Accept" -> "application/json")
+        val res = WeddingPlannerService.service(input.request)
+
+        res.map { response =>
+          response.contentString shouldBe "[]"
+          response.status shouldBe Status.Ok
+        }
       }
     }
   }
