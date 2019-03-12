@@ -3,11 +3,7 @@ package weddingplanner.server
 import java.nio.file.Paths
 
 final case class Port(value: Int) extends AnyVal
-case class ServicesConfig(port: Port = Port(8080),
-                          agendaGraph: GraphConfig,
-                          appointmentGraph: GraphConfig,
-                          personGraph: GraphConfig,
-                          placeGraph: GraphConfig)
+case class ServicesConfig(port: Port = Port(8080), graph: GraphConfig)
 
 object ServicesConfig {
   import pureconfig._
@@ -22,11 +18,13 @@ object ServicesConfig {
       .loadConfig[ServicesConfig]
       .toOption
       .orElse(Option(System.getenv("WEDDING_CONFIG"))
-        .map(iri =>
+        .map { iri =>
+          scribe.info(s"using WEDDING_CONFIG=${iri}")
           pureconfig.loadConfig[ServicesConfig](Paths.get(iri)) match {
             case Right(r) => r
             case Left(e)  => throw new Exception(e.toString)
-        }))
+          }
+        })
       .orElse(pureconfig
         .loadConfig[ServicesConfig](Paths.get(System.getProperty("user.home") + "/weddingplanner.conf")) match {
         case Right(r) => Some(r)
@@ -38,14 +36,10 @@ object ServicesConfig {
         import com.typesafe.config.ConfigFactory
         scribe.warn("no context file found, starting in-memory graphs")
         pureconfig
-          .loadConfig[ServicesConfig](
-            ConfigFactory.parseString("""
+          .loadConfig[ServicesConfig](ConfigFactory.parseString("""
               |{
-              |  port : 8080,
-              |  agenda-graph : { name : "WeddingPlannerAgendaGraph" },
-              |  appointment-graph : { name : "WeddingPlannerAppointmentGraph" },
-              |  person-graph : { name : "WeddingPlannerPersonGraph" },
-              |  place-graph : { name : "WeddingPlannerPlaceGraph" }
+              |  port : 8081,
+              |  graph : { name : "http://api.convenantgemeenten.nl" }
               |}
             """.stripMargin))
           .getOrElse(throw new Exception("could not load any config ..."))

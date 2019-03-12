@@ -41,7 +41,8 @@ lazy val commonSettings = projectSettings ++ Seq(
   organization := "nl.thijsbroersen",
   scalaVersion := "2.12.8",
   crossScalaVersions := Seq("2.12.8"),
-  updateOptions := updateOptions.value.withCachedResolution(true)
+  updateOptions := updateOptions.value.withCachedResolution(true),
+  updateOptions := updateOptions.value.withLatestSnapshots(false)
 )
 
 val dirtyEnd = """(\+\d\d\d\d\d\d\d\d-\d\d\d\d)-SNAPSHOT$""".r

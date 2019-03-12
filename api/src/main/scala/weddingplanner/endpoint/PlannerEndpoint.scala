@@ -4,14 +4,15 @@ import java.time.Instant
 
 import cats.effect.IO
 import io.finch.{Endpoint, Ok}
-import lspace.librarian.process.traversal.{Collection, Traversal}
-import lspace.librarian.provider.mem.MemGraph
-import lspace.librarian.structure.{ClassType, Graph}
+import lspace._
+import lspace.provider.mem.MemGraph
+import lspace.structure.{ClassType, Graph}
 import lspace.services.rest.endpoints.TraversalService
 import monix.eval.Task
+import monix.reactive.Observable
 import shapeless.HList
 import scribe._
-import weddingplanner.ns.{Agenda, Appointment, Place}
+import weddingplanner.ns.{agenda, Agenda, Appointment, Place}
 
 import scala.util.{Failure, Success, Try}
 
@@ -27,6 +28,7 @@ case class PlannerEndpoint[Json](agendaGraph: Graph, personGraph: Graph, placeGr
   implicit val ec = monix.execution.Scheduler.global
 
   import io.finch._
+  import lspace.Implicits.AsyncGuide.guide
 
   implicit val dateTimeDecoder: DecodeEntity[Instant] =
     DecodeEntity.instance(s =>
@@ -35,22 +37,19 @@ case class PlannerEndpoint[Json](agendaGraph: Graph, personGraph: Graph, placeGr
         case Failure(error)   => Left(error)
     })
 
+  def allGraph = MemGraph("allgraph") ++ agendaGraph ++ personGraph ++ placeGraph ++ appointmentGraph
+
   val traverse: Endpoint[IO, String] = {
     get("planner" :: "place" :: "available" :: paramOption[Instant]("since") :: paramOption[Instant]("until")) {
       (since: Option[Instant], until: Option[Instant]) =>
-//        val allGraph = MemGraph("allgraph") ++ agendaGraph ++ personGraph ++ placeGraph ++ appointmentGraph
-        val allGraph = MemGraph("allgraph")
-        allGraph ++ agendaGraph
-        allGraph ++ personGraph
-        allGraph ++ placeGraph
-        allGraph ++ appointmentGraph
-
-        val placesAndAppointments = allGraph.g.N
-          .project(_.hasLabel(Place.ontology),
-                   _.out(Place.keys.agenda).out(Agenda.keys.appointment).hasLabel(Appointment.ontology))
-          .toList
-          .groupBy(_._1)
-          .mapValues(_.map(_._2))
+        val placesAndAppointments = g.N
+          .hasLabel(Agenda.ontology)
+          .project(t => t, _.out(agenda).out(Agenda.keys.appointment).hasLabel(Appointment.ontology))
+          .withGraph(allGraph)
+          .toListF
+          .map(_.groupBy(_._1)
+            .mapValues(_.map(_._2)))
+          .runToFuture
 //        placesAndAppointments.filter {
 //          case (place, appointments) =>
 //            appointments.filter(_.out(Appointment.keys.s)
@@ -58,7 +57,8 @@ case class PlannerEndpoint[Json](agendaGraph: Graph, personGraph: Graph, placeGr
 
         Ok("")
     }
+
   }
 
-//  val api = service.label :: service.api
+  val api = "planner" :: traverse
 }

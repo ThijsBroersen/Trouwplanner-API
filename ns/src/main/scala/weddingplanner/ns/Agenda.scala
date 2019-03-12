@@ -2,33 +2,27 @@ package weddingplanner.ns
 
 import java.time.Instant
 
+import lspace.ns.vocab
 import lspace.client.User
-import lspace.librarian.datatype.TextType
-import lspace.librarian.structure.OntologyDef
-import lspace.librarian.structure.Property
-import lspace.librarian.structure.PropertyDef
+import lspace.datatype.TextType
+import lspace.structure.OntologyDef
+import lspace.structure.Property
+import lspace.structure.PropertyDef
 
 object Agenda
-    extends OntologyDef("sptth://example.test/Agenda",
+    extends OntologyDef("https://ns.convenantgemeenten.nl/Agenda",
                         label = "Agenda",
                         comment = "An appointment diary",
-                        `@extends` = () => Generic.CreativeWork.ontology :: Nil) {
+                        `@extends` = () => vocab.schema.CreativeWork.ontology :: Nil) {
 
-  object keys extends Generic.CreativeWork.Properties {
-    object owner
-        extends PropertyDef(ontology.iri + "/owner",
-                            label = "owner",
-                            comment = "A person or organization who owns something.",
-                            `@range` = () => User.ontology :: Nil)
+  object keys extends vocab.schema.CreativeWork.Properties {
     object appointment
         extends PropertyDef(ontology.iri + "/appointment",
                             label = "appointment",
                             `@range` = () => Appointment.ontology :: Nil)
   }
-  override lazy val properties
-    : List[Property] = keys.owner.property :: keys.appointment.property :: Generic.CreativeWork.properties
+  override lazy val properties: List[Property] = keys.appointment.property :: vocab.schema.CreativeWork.properties
   trait Properties {
-    lazy val owner       = keys.owner
     lazy val appointment = keys.appointment
   }
 
