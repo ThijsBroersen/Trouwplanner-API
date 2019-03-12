@@ -3,7 +3,7 @@ package weddingplanner.server
 import lspace.lgraph.LGraph
 import lspace.lgraph.provider.file.FileStoreProvider
 import lspace.lgraph.provider.mem.MemIndexProvider
-import lspace.librarian.provider.mem.MemGraph
+import lspace.provider.mem.MemGraph
 
 sealed trait GraphConfig
 

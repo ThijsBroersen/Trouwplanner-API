@@ -4,7 +4,7 @@ import com.twitter.finagle.http.Status
 import io.finch.Input
 import io.finch.Application
 import lspace.codec.ActiveContext
-import lspace.librarian.provider.detached.DetachedGraph
+import lspace.provider.detached.DetachedGraph
 import lspace.services.{LService, LServiceSpec}
 import org.scalatest.BeforeAndAfterAll
 import weddingplanner.ns.Agenda
@@ -38,7 +38,7 @@ class WeddingPlannerServiceSpec extends LServiceSpec with BeforeAndAfterAll {
             .outEMap()
             .map {
               case (property, edges) =>
-                property.label("en") -> (edges match {
+                property.label("en").get -> (edges match {
                   case List(e) => encoder.fromAny(e.to, Some(e.to.labels.head))(ActiveContext()).json
                 })
             }
@@ -63,6 +63,18 @@ class WeddingPlannerServiceSpec extends LServiceSpec with BeforeAndAfterAll {
 
       res.map { response =>
         response.status shouldBe Status.NotFound
+      }
+    }
+
+    "return active ontology for path" in {
+      import lspace.services.util._
+      val input = Input
+        .get("/person.jsonld")
+        .withHeaders("Accept" -> "application/ld+json")
+      val res = WeddingPlannerService.service(input.request)
+
+      res.map { response =>
+        response.status shouldBe Status.Ok
       }
     }
   }

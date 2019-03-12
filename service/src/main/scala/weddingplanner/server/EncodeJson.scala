@@ -1,8 +1,9 @@
 package weddingplanner.server
 
+import lspace.codec.ActiveContext
 import lspace.encode.EncodeJson
-import lspace.librarian.structure.Node
-import lspace.librarian.structure.Property.default.`@id`
+import lspace.structure.Node
+import lspace.structure.Property.default.`@id`
 
 object EncodeJson {
 
@@ -13,16 +14,16 @@ object EncodeJson {
         .outEMap()
         .map {
           case (`@id`, id) =>
-            `@id`.iri -> encoder.textToJson(id.head.value.toString) //head.to.value.toString.reverse
+            `@id`.iri -> encoder.textToJson(id.head.to.value.toString) //head.to.value.toString.reverse
 //                .takeWhile(_ != '/')
 //                .reverse) //id.head.to.value.toString.stripPrefix(node.graph.iri + "/").asJson
           case (property, edges) =>
-            property.label.get("en").getOrElse(property.iri) -> (edges match {
+            property.label("en").getOrElse(property.iri) -> (edges match {
               case List(edge) =>
-                encoder.fromAny(edge.to, edge.to.labels.headOption)(encoder.getNewActiveContext).json
+                encoder.fromAny(edge.to, edge.to.labels.headOption)(ActiveContext()).json
               case edges =>
                 encoder.listToJson(edges
-                  .map(edge => encoder.fromAny(edge.to, edge.to.labels.headOption)(encoder.getNewActiveContext).json))
+                  .map(edge => encoder.fromAny(edge.to, edge.to.labels.headOption)(ActiveContext()).json))
             })
         })
   }
