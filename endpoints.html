@@ -1,0 +1,220 @@
+<html><head><title>Weddingplanner-API: Endpoint guide</title><meta charset="utf-8" /><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Thijs Broersen" /><meta name="description" content="Services for planning a wedding (location, wedding official etc." /><meta name="og:image" content="/Weddingplanner-API/img/poster.png" /><meta name="image" property="og:image" content="/Weddingplanner-API/img/poster.png" /><meta name="og:title" content="Weddingplanner-API: Endpoint guide" /><meta name="title" property="og:title" content="Weddingplanner-API: Endpoint guide" /><meta name="og:site_name" content="Weddingplanner-API" /><meta name="og:url" content="https://thijsbroersen.github.io/Weddingplanner-API/" /><meta name="og:type" content="website" /><meta name="og:description" content="Services for planning a wedding (location, wedding official etc." /><link rel="icon" type="image/png" href="/Weddingplanner-API/img/favicon.png" /><meta name="twitter:title" content="Weddingplanner-API: Endpoint guide" /><meta name="twitter:image" content="/Weddingplanner-API/img/poster.png" /><meta name="twitter:description" content="Services for planning a wedding (location, wedding official etc." /><meta name="twitter:card" content="summary_large_image" /><link rel="icon" type="image/png" sizes="16x16" href="/Weddingplanner-API/img/favicon16x16.png" /><link rel="icon" type="image/png" sizes="24x24" href="/Weddingplanner-API/img/favicon24x24.png" /><link rel="icon" type="image/png" sizes="32x32" href="/Weddingplanner-API/img/favicon32x32.png" /><link rel="icon" type="image/png" sizes="48x48" href="/Weddingplanner-API/img/favicon48x48.png" /><link rel="icon" type="image/png" sizes="57x57" href="/Weddingplanner-API/img/favicon57x57.png" /><link rel="icon" type="image/png" sizes="60x60" href="/Weddingplanner-API/img/favicon60x60.png" /><link rel="icon" type="image/png" sizes="64x64" href="/Weddingplanner-API/img/favicon64x64.png" /><link rel="icon" type="image/png" sizes="70x70" href="/Weddingplanner-API/img/favicon70x70.png" /><link rel="icon" type="image/png" sizes="72x72" href="/Weddingplanner-API/img/favicon72x72.png" /><link rel="icon" type="image/png" sizes="76x76" href="/Weddingplanner-API/img/favicon76x76.png" /><link rel="icon" type="image/png" sizes="96x96" href="/Weddingplanner-API/img/favicon96x96.png" /><link rel="icon" type="image/png" sizes="114x114" href="/Weddingplanner-API/img/favicon114x114.png" /><link rel="icon" type="image/png" sizes="120x120" href="/Weddingplanner-API/img/favicon120x120.png" /><link rel="icon" type="image/png" sizes="128x128" href="/Weddingplanner-API/img/favicon128x128.png" /><link rel="icon" type="image/png" sizes="144x144" href="/Weddingplanner-API/img/favicon144x144.png" /><link rel="icon" type="image/png" sizes="150x150" href="/Weddingplanner-API/img/favicon150x150.png" /><link rel="icon" type="image/png" sizes="152x152" href="/Weddingplanner-API/img/favicon152x152.png" /><link rel="icon" type="image/png" sizes="196x196" href="/Weddingplanner-API/img/favicon196x196.png" /><link rel="icon" type="image/png" sizes="310x310" href="/Weddingplanner-API/img/favicon310x310.png" /><link rel="icon" type="image/png" sizes="310x150" href="/Weddingplanner-API/img/favicon310x150.png" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" /><link rel="stylesheet" href="/Weddingplanner-API/highlight/styles/default.css" /><link rel="stylesheet" href="/Weddingplanner-API/css/style.css" /><link rel="stylesheet" href="/Weddingplanner-API/css/palette.css" /><link rel="stylesheet" href="/Weddingplanner-API/css/codemirror.css" /></head><body class="docs"><div id="wrapper"><div id="sidebar-wrapper"><ul id="sidebar" class="sidebar-nav"><li class="sidebar-brand"><a href="/Weddingplanner-API/" class="brand"><div class="brand-wrapper"><span>Weddingplanner-API</span></div></a></li><li><a href="/Weddingplanner-API/changelog.html" class="">Changelog</a></li><li><a href="/Weddingplanner-API/design.html" class="">Design</a></li><li><a href="/Weddingplanner-API/endpoints.html" class=" active ">Endpoint guide</a></li><li><a href="/Weddingplanner-API/css/palette.css" class=""></a></li><li><a href="/Weddingplanner-API/css/style.css" class=""></a></li></ul></div><div id="page-content-wrapper"><div class="nav"><div class="container-fluid"><div class="row"><div class="col-lg-12"><div class="action-menu pull-left clearfix"><a href="#menu-toggle" id="menu-toggle"><i class="fa fa-bars" aria-hidden="true"></i></a></div><ul class="pull-right"><li id="gh-eyes-item" class="hidden-xs"><a href="https://github.com/ThijsBroersen/Weddingplanner-API"><i class="fa fa-eye"></i><span>WATCH<span id="eyes" class="label label-default">--</span></span></a></li><li id="gh-stars-item" class="hidden-xs"><a href="https://github.com/ThijsBroersen/Weddingplanner-API"><i class="fa fa-star-o"></i><span>STARS<span id="stars" class="label label-default">--</span></span></a></li><li><a href="#" onclick="shareSiteTwitter('Weddingplanner-API Services for planning a wedding (location, wedding official etc.');"><i class="fa fa-twitter"></i></a></li><li><a href="#" onclick="shareSiteFacebook('Weddingplanner-API Services for planning a wedding (location, wedding official etc.');"><i class="fa fa-facebook"></i></a></li><li><a href="#" onclick="shareSiteGoogle();"><i class="fa fa-google-plus"></i></a></li></ul></div></div></div></div><div id="content" data-github-owner="ThijsBroersen" data-github-repo="Weddingplanner-API"><div class="content-wrapper"><section><h1 id="endpoint-guide">Endpoint Guide</h1>
+<ul>
+  <li><a href="#overview">Overview</a></li>
+  <li><a href="#data-services">Data services</a>
+    <ul>
+      <li><a href="#agenda">Agenda</a></li>
+      <li><a href="#appointment">Appointment</a></li>
+      <li><a href="#person">Person</a></li>
+      <li><a href="#place">Place</a></li>
+    </ul>
+  </li>
+  <li><a href="#process-services">Process services</a>
+    <ul>
+      <li><a href="#wedding-reservation">Wedding reservation</a></li>
+      <li><a href="#report-of-marriage">Report of marriage</a></li>
+    </ul>
+  </li>
+  <li><a href="#knowledge-services">Knowledge services</a>
+    <ul>
+      <li><a href="#kinsman-service">Kinsman</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="overview">Overview</h2>
+<p>There are multiple endpoints, each has its own purpose.</p>
+<h2 id="data-services">Data services</h2>
+<p>Data services are the main storage for data. 
+They are support a traditional rest-api to allow for all crud-operations (if authorized).</p>
+<h3 id="agenda">Agenda</h3>
+<p>The agenda-endpoint is an service which registers agenda’s</p>
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="s2">"@id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sptth://example.test/Agenda"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"@type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"@class"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"@label"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="s2">"en"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Agenda"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="s2">"@comment"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="s2">"en"</span><span class="p">:</span><span class="w"> </span><span class="s2">"An appointment diary"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="s2">"@extends"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="s2">"https://schema.org/CreativeWork"</span><span class="w">
+  </span><span class="p">],</span><span class="w">
+  </span><span class="s2">"@properties"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+   </span><span class="p">{</span><span class="w">
+     </span><span class="s2">"@id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sptth://example.test/Agenda/owner"</span><span class="p">,</span><span class="w">
+     </span><span class="s2">"@type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"@property"</span><span class="p">,</span><span class="w">
+     </span><span class="s2">"@label"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+       </span><span class="s2">"en"</span><span class="p">:</span><span class="w"> </span><span class="s2">"owner"</span><span class="w">
+     </span><span class="p">},</span><span class="w">
+     </span><span class="s2">"@comment"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+       </span><span class="s2">"en"</span><span class="p">:</span><span class="w"> </span><span class="s2">"A person or organization who owns something."</span><span class="w">
+     </span><span class="p">},</span><span class="w">
+     </span><span class="s2">"@range"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://ns.l-space.eu/User"</span><span class="w">
+   </span><span class="p">},</span><span class="w">
+   </span><span class="p">{</span><span class="w">
+     </span><span class="s2">"@id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sptth://example.test/Agenda/appointment"</span><span class="p">,</span><span class="w">
+     </span><span class="s2">"@type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"@property"</span><span class="p">,</span><span class="w">
+     </span><span class="s2">"@label"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+       </span><span class="s2">"en"</span><span class="p">:</span><span class="w"> </span><span class="s2">"appointment"</span><span class="w">
+     </span><span class="p">},</span><span class="w">
+     </span><span class="s2">"@range"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sptth://example.test/Appointment"</span><span class="w">
+   </span><span class="p">},</span><span class="w">
+   </span><span class="p">{</span><span class="w">
+     </span><span class="s2">"@id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://schema.org/dateCreated"</span><span class="p">,</span><span class="w">
+     </span><span class="s2">"@type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"@property"</span><span class="p">,</span><span class="w">
+     </span><span class="s2">"@label"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+       </span><span class="s2">"en"</span><span class="p">:</span><span class="w"> </span><span class="s2">"dateCreated"</span><span class="w">
+     </span><span class="p">},</span><span class="w">
+     </span><span class="s2">"@comment"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+       </span><span class="s2">"en"</span><span class="p">:</span><span class="w"> </span><span class="s2">"The date on which the CreativeWork was created or the item was added to a DataFeed."</span><span class="w">
+     </span><span class="p">},</span><span class="w">
+     </span><span class="s2">"@range"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+       </span><span class="s2">"@datetime"</span><span class="p">,</span><span class="w">
+       </span><span class="s2">"@date"</span><span class="w">
+     </span><span class="p">]</span><span class="w">
+   </span><span class="p">},</span><span class="w">
+   </span><span class="p">{</span><span class="w">
+     </span><span class="s2">"@id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://schema.org/dateModified"</span><span class="p">,</span><span class="w">
+     </span><span class="s2">"@type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"@property"</span><span class="p">,</span><span class="w">
+     </span><span class="s2">"@label"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+       </span><span class="s2">"en"</span><span class="p">:</span><span class="w"> </span><span class="s2">"dateModified"</span><span class="w">
+     </span><span class="p">},</span><span class="w">
+     </span><span class="s2">"@comment"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+       </span><span class="s2">"en"</span><span class="p">:</span><span class="w"> </span><span class="s2">"The date on which the CreativeWork was created or the item was added to a DataFeed."</span><span class="w">
+     </span><span class="p">},</span><span class="w">
+     </span><span class="s2">"@range"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+       </span><span class="s2">"@datetime"</span><span class="p">,</span><span class="w">
+       </span><span class="s2">"@date"</span><span class="w">
+     </span><span class="p">]</span><span class="w">
+   </span><span class="p">},</span><span class="w">
+   </span><span class="p">{</span><span class="w">
+     </span><span class="s2">"@id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://schema.org/identifier"</span><span class="p">,</span><span class="w">
+     </span><span class="s2">"@type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"@property"</span><span class="p">,</span><span class="w">
+     </span><span class="s2">"@label"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+       </span><span class="s2">"en"</span><span class="p">:</span><span class="w"> </span><span class="s2">"identifier"</span><span class="w">
+     </span><span class="p">},</span><span class="w">
+     </span><span class="s2">"@comment"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+       </span><span class="s2">"en"</span><span class="p">:</span><span class="w"> </span><span class="s2">"The identifier property represents any kind of identifier for any kind of Thing, such as ISBNs, GTIN codes, UUIDs etc. Schema.org provides dedicated properties for representing many of these, either as textual strings or as URL (URI) links. See background notes for more details."</span><span class="w">
+     </span><span class="p">},</span><span class="w">
+     </span><span class="s2">"@range"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+       </span><span class="s2">"@string"</span><span class="p">,</span><span class="w">
+       </span><span class="s2">"@url"</span><span class="w">
+     </span><span class="p">]</span><span class="w">
+   </span><span class="p">},</span><span class="w">
+   </span><span class="p">{</span><span class="w">
+     </span><span class="s2">"@id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://schema.org/name"</span><span class="p">,</span><span class="w">
+     </span><span class="s2">"@type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"@property"</span><span class="p">,</span><span class="w">
+     </span><span class="s2">"@label"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+       </span><span class="s2">"en"</span><span class="p">:</span><span class="w"> </span><span class="s2">"name"</span><span class="w">
+     </span><span class="p">},</span><span class="w">
+     </span><span class="s2">"@comment"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+       </span><span class="s2">"en"</span><span class="p">:</span><span class="w"> </span><span class="s2">"The name of the item."</span><span class="w">
+     </span><span class="p">},</span><span class="w">
+     </span><span class="s2">"@range"</span><span class="p">:</span><span class="w"> </span><span class="s2">"@string"</span><span class="w">
+   </span><span class="p">},</span><span class="w">
+   </span><span class="p">{</span><span class="w">
+     </span><span class="s2">"@id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://schema.org/description"</span><span class="p">,</span><span class="w">
+     </span><span class="s2">"@type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"@property"</span><span class="p">,</span><span class="w">
+     </span><span class="s2">"@label"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+       </span><span class="s2">"en"</span><span class="p">:</span><span class="w"> </span><span class="s2">"description"</span><span class="w">
+     </span><span class="p">},</span><span class="w">
+     </span><span class="s2">"@comment"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+       </span><span class="s2">"en"</span><span class="p">:</span><span class="w"> </span><span class="s2">"A description of the item."</span><span class="w">
+     </span><span class="p">},</span><span class="w">
+     </span><span class="s2">"@range"</span><span class="p">:</span><span class="w"> </span><span class="s2">"@string"</span><span class="w">
+   </span><span class="p">}</span><span class="w">
+ </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+<h3 id="appointment">Appointment</h3>
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="s2">"@id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sptth://example.test/Appointment"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"@type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"@class"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"@label"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="s2">"en"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Appointment"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="s2">"@comment"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="s2">"en"</span><span class="p">:</span><span class="w"> </span><span class="s2">"An arrangement to meet at a particular time and place."</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="s2">"@extends"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="s2">"https://schema.org/CreativeWork"</span><span class="w">
+  </span><span class="p">],</span><span class="w">
+  </span><span class="s2">"@properties"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="s2">"https://schema.org/description"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"https://schema.org/startDate"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"https://schema.org/dateModified"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"https://schema.org/name"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"https://schema.org/endDate"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"https://schema.org/identifier"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"https://schema.org/dateCreated"</span><span class="w">
+  </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+<h3 id="person">Person</h3>
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="s2">"@id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://schema.org/Person"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"@type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"@class"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"@label"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="s2">"en"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Person"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="s2">"@comment"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="s2">"en"</span><span class="p">:</span><span class="w"> </span><span class="s2">"A person (alive, dead, undead, or fictional)."</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="s2">"@extends"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="s2">"https://schema.org/Thing"</span><span class="w">
+  </span><span class="p">],</span><span class="w">
+  </span><span class="s2">"@properties"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="s2">"https://ns.l-space.eu//agenda"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"https://schema.org/description"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"https://schema.org/worksFor"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"https://schema.org/honorificPrefix"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"https://schema.org/name"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"https://schema.org/identifier"</span><span class="w">
+  </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+<h3 id="place">Place</h3>
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="s2">"@id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://schema.org/Place"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"@type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"@class"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"@label"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="s2">"en"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Place"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="s2">"@comment"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="s2">"en"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Entities that have a somewhat fixed, physical extension."</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="s2">"@extends"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="s2">"https://schema.org/Thing"</span><span class="w">
+  </span><span class="p">],</span><span class="w">
+  </span><span class="s2">"@properties"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="s2">"https://schema.org/description"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"https://schema.org/review"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"https://schema.org//address"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"https://schema.org/name"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"https://schema.org/identifier"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"https://schema.org//geo"</span><span class="w">
+  </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<h2 id="process-services">Process services</h2>
+<p>Process services which support stateful resource operations. 
+The available operations depend on the state of the resource (including remote state of linked objects).</p>
+<h3 id="wedding-reservation">Wedding reservation</h3>
+<p>A wedding service mediates in planning a wedding.</p>
+<h3 id="report-of-marriage">Report of marriage</h3>
+<p>A report of marriage is a official notification from the expected wedding couple to the local authorities.</p>
+
+<h2 id="knowledge-services">Knowledge services</h2>
+<p>Knowlegde services can be queried or asked for information. They are a hotspot or interchange for information. 
+A knowledge service can execute federated queries, this means that the query contains parts to be executed on other services. 
+This can be the result of a query or some sort of assertion.</p>
+<h3 id="kinsman">Kinsman</h3>
+<p>This service can test whether two people are related to some extend. 
+It returns a boolean (<code class="highlighter-rouge">Content-Type: text/boolean</code>)</p>
+</section></div></div></div></div><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script><script src="/Weddingplanner-API/highlight/highlight.pack.js"></script><script>hljs.configure({languages:['scala','java','bash']});
+hljs.initHighlighting();
+              </script><script>((window.gitter = {}).chat = {}).options = {
+room: 'ThijsBroersen/Weddingplanner-API'};</script><script src="https://sidecar.gitter.im/dist/sidecar.v1.js"></script><script src="/Weddingplanner-API/js/main.js"></script></body></html>
