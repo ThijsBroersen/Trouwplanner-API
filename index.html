@@ -25,6 +25,39 @@ To include <code class="highlighter-rouge">weddingplanner-xx</code> add the foll
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd examples
 docker-compose up
 </code></pre></div></div>
+
+<h2 id="demo">Demo</h2>
+<p>A demo-api runs at <a href="http://api.convenantgemeenten.nl/">http://api.convenantgemeenten.nl/</a>.</p>
+
+<p>The demo-data can be reset by doing a GET on <a href="http://api.convenantgemeenten.nl/reset">/reset</a></p>
+
+<p>The demo-data can be cleared by doing a GET on <a href="http://api.convenantgemeenten.nl/clear">/clear</a></p>
+
+<p>The service runs the following services:</p>
+
+<p>data:</p>
+<ul>
+  <li><a href="http://api.convenantgemeenten.nl/agenda/">/agenda/</a></li>
+  <li><a href="http://api.convenantgemeenten.nl/appointment/">/appointment/</a></li>
+  <li><a href="http://api.convenantgemeenten.nl/person/">/person/</a></li>
+  <li><a href="http://api.convenantgemeenten.nl/place/">/place/</a></li>
+</ul>
+
+<p>process:</p>
+<ul>
+  <li><a href="http://api.convenantgemeenten.nl/reportofmarriage/">/reportofmarriage/</a></li>
+  <li><a href="http://api.convenantgemeenten.nl/weddingreservation/">/weddingreservation/</a></li>
+</ul>
+
+<p>knowledge:</p>
+<ul>
+  <li><a href="http://api.convenantgemeenten.nl/kinsman/">/kinsman/</a>
+    <ul>
+      <li>[?person]</li>
+    </ul>
+  </li>
+  <li><a href="http://api.convenantgemeenten.nl/canmarry/">/canmarry/</a></li>
+</ul>
 </div></div></section></main><footer id="site-footer"><div class="container"><div class="row"><div class="col-xs-6"><p>Weddingplanner-API is designed and developed by <a href="" target="_blank">Thijs Broersen</a></p></div><div class="col-xs-6"><p class="text-right"><a href="https://github.com/ThijsBroersen/Weddingplanner-API"><span class="fa fa-github"></span>View on GitHub</a></p></div></div><div class="row"><div class="col-xs-6"></div></div></div></footer><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script><script src="/Weddingplanner-API/highlight/highlight.pack.js"></script><script>hljs.configure({languages:['scala','java','bash']});
 hljs.initHighlighting();
               </script><script>((window.gitter = {}).chat = {}).options = {
