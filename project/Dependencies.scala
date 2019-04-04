@@ -4,8 +4,8 @@ import org.portablescala.sbtplatformdeps.PlatformDepsPlugin.autoImport._
 // Versions
 object Version {
   val scala       = "2.12.8"
-  val lspace      = "0.5.1.2+3-8edead5b-SNAPSHOT"
-  val `ns.lspace` = "0.0.6.7+1-9842982b-SNAPSHOT"
+  val lspace      = "0.6.0.0-M2"
+  val `ns.lspace` = "0.0.7.0"
 }
 
 // Libraries
@@ -23,7 +23,7 @@ object Library {
   val pureconfigGeneric = "com.github.pureconfig" %% "pureconfig-generic" % "0.10.2"
 
   val scalaTest =
-    Def.setting("org.scalatest" %%% "scalatest" % "3.0.5" % "test")
+    Def.setting("org.scalatest" %%% "scalatest" % "3.0.7" % "test")
 }
 
 object Dependencies {
