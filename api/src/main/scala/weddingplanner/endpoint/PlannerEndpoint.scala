@@ -10,7 +10,7 @@ import lspace.structure.{ClassType, Graph}
 import lspace.services.rest.endpoints.TraversalService
 import monix.eval.Task
 import monix.reactive.Observable
-import shapeless.HList
+import shapeless.{HList, HNil}
 import scribe._
 import weddingplanner.ns.{agenda, Agenda, Appointment, Place}
 
@@ -37,28 +37,40 @@ case class PlannerEndpoint[Json](agendaGraph: Graph, personGraph: Graph, placeGr
         case Failure(error)   => Left(error)
     })
 
-  def allGraph = MemGraph("allgraph") ++ agendaGraph ++ personGraph ++ placeGraph ++ appointmentGraph
+  implicit class WithGraphTask(graphTask: Task[Graph]) {
+    def ++(graph: Graph) =
+      for {
+        graph0 <- graphTask
+        graph1 <- graph0 ++ graph
+      } yield graph1
+  }
+  def allGraph: Task[Graph] = MemGraph("allgraph") ++ agendaGraph ++ personGraph ++ placeGraph ++ appointmentGraph
 
-  val traverse: Endpoint[IO, String] = {
-    get("planner" :: "place" :: "available" :: paramOption[Instant]("since") :: paramOption[Instant]("until")) {
-      (since: Option[Instant], until: Option[Instant]) =>
-        val placesAndAppointments = g.N
-          .hasLabel(Agenda.ontology)
-          .project(t => t, _.out(agenda).out(Agenda.keys.appointment).hasLabel(Appointment.ontology))
-          .withGraph(allGraph)
-          .toListF
-          .map(_.groupBy(_._1)
-            .mapValues(_.map(_._2)))
-          .runToFuture
-//        placesAndAppointments.filter {
-//          case (place, appointments) =>
-//            appointments.filter(_.out(Appointment.keys.s)
-//        }
+  val placesAvailable: Endpoint[IO, String] = {
+    import shapeless.::
+    get("place" :: "available" :: param[Instant]("since") :: param[Instant]("until"))
+      .mapOutputAsync {
+        case (since: Instant) :: (until: Instant) :: HNil =>
+          (for {
+            graph <- allGraph
+            placesAndAppointments <- g.N
+              .hasLabel(Agenda.ontology)
+              .project(t => t, _.out(agenda).out(Agenda.keys.appointment).hasLabel(Appointment.ontology))
+              .withGraph(graph)
+              .toListF
+              .map(_.groupBy(_._1)
+                .mapValues(_.map(_._2)))
+          } yield {
+            //        placesAndAppointments.filter {
+            //          case (place, appointments) =>
+            //            appointments.filter(_.out(Appointment.keys.s)
+            //        }
 
-        Ok("")
-    }
+            Ok("")
+          }).toIO
+      }
 
   }
 
-  val api = "planner" :: traverse
+  val api = "planner" :: placesAvailable
 }

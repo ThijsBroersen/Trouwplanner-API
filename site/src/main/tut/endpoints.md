@@ -1,18 +1,29 @@
 ---
 layout: docs
-title: Schema guide
+title: Endpoint guide
 position: 2
 ---
 
-# Schema Guide
+# Endpoint Guide
 * [Overview](#overview)
-* [Agenda](#agenda)
-* [Appointment](#appointment)
-* [Person](#person)
-* [Place](#place)
+* [Data services](#data-services)
+  * [Agenda](#agenda)
+  * [Appointment](#appointment)
+  * [Person](#person)
+  * [Place](#place)
+* [Process services](#process-services)
+  * [Wedding reservation](#wedding-reservation)
+  * [Report of marriage](#report-of-marriage)
+* [Knowledge services](#knowledge-services)
+  * [Kinsman](#kinsman-service)
   
 ## Overview
-## Agenda
+There are multiple endpoints, each has its own purpose. 
+## Data services
+Data services are the main storage for data. 
+They are support a traditional rest-api to allow for all crud-operations (if authorized).
+### Agenda
+The agenda-endpoint is an service which registers agenda's
 ```json
 {
   "@id": "sptth://example.test/Agenda",
@@ -113,7 +124,7 @@ position: 2
  ]
 }
 ```
-## Appointment
+### Appointment
 ```json
 {
   "@id": "sptth://example.test/Appointment",
@@ -138,7 +149,7 @@ position: 2
   ]
 }
 ```
-## Person
+### Person
 ```json
 {
   "@id": "https://schema.org/Person",
@@ -162,7 +173,7 @@ position: 2
   ]
 }
 ```
-## Place
+### Place
 ```json
 {
   "@id": "https://schema.org/Place",
@@ -186,3 +197,19 @@ position: 2
   ]
 }
 ```
+
+## Process services
+Process services which support stateful resource operations. 
+The available operations depend on the state of the resource (including remote state of linked objects). 
+### Wedding reservation
+A wedding service mediates in planning a wedding.  
+### Report of marriage
+A report of marriage is a official notification from the expected wedding couple to the local authorities.
+
+## Knowledge services
+Knowlegde services can be queried or asked for information. They are a hotspot or interchange for information. 
+A knowledge service can execute federated queries, this means that the query contains parts to be executed on other services. 
+This can be the result of a query or some sort of assertion.
+### Kinsman
+This service can test whether two people are related to some extend. 
+It returns a boolean (```Content-Type: text/boolean```)
