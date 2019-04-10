@@ -55,7 +55,7 @@ case class PlannerEndpoint[Json](agendaGraph: Graph, personGraph: Graph, placeGr
             graph <- allGraph
             placesAndAppointments <- g.N
               .hasLabel(Agenda.ontology)
-              .project(t => t)(_.out(agenda).out(Agenda.keys.appointment).hasLabel(Appointment.ontology))
+              .project(t => t, _.out(agenda).out(Agenda.keys.appointment).hasLabel(Appointment.ontology))
               .withGraph(graph)
               .toListF
               .map(_.groupBy(_._1)
