@@ -82,9 +82,12 @@ trait WeddingPlannerService extends LService {
     }
 
     val clearGraphs: Endpoint[IO, String] = get(path("clear")) {
-      Task {
-        graph.purge
-      }.forkAndForget.runToFuture(monix.execution.Scheduler.global)
+      graph.purge
+        .onErrorHandle { f =>
+          println(f.getMessage); throw f
+        }
+        .forkAndForget
+        .runToFuture(monix.execution.Scheduler.global)
       Ok("clearing now")
     }
 

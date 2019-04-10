@@ -31,3 +31,28 @@ or with docker:
 cd examples
 docker-compose up
 ```
+
+## Demo
+A demo-api runs at [http://api.convenantgemeenten.nl/](http://api.convenantgemeenten.nl/). 
+
+The demo-data can be reset by doing a GET on [/reset](http://api.convenantgemeenten.nl/reset)
+
+The demo-data can be cleared by doing a GET on [/clear](http://api.convenantgemeenten.nl/clear)
+
+The service runs the following services:  
+
+data:  
+  * [/agenda/](http://api.convenantgemeenten.nl/agenda/)
+  * [/appointment/](http://api.convenantgemeenten.nl/appointment/)
+  * [/person/](http://api.convenantgemeenten.nl/person/)
+  * [/place/](http://api.convenantgemeenten.nl/place/)
+
+process:  
+  * [/reportofmarriage/](http://api.convenantgemeenten.nl/reportofmarriage/)
+  * [/weddingreservation/](http://api.convenantgemeenten.nl/weddingreservation/)
+  
+knowledge:
+  * [/kinsman/](http://api.convenantgemeenten.nl/kinsman/)
+    * [?person]
+    * example: [/kinsman/?iri=person1&iri=person2&degree=3](http://api.convenantgemeenten.nl/kinsman/?iri=person1&iri=person2&degree=3)
+  * [/canmarry/](http://api.convenantgemeenten.nl/canmarry/)
