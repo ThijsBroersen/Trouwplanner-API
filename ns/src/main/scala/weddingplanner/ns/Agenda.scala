@@ -28,10 +28,10 @@ object Agenda
 
 }
 
-case class Agenda(id: Option[Int],
-                  name: String,
-                  description: String,
-                  owner: User,
-                  appointment: Set[Appointment],
-                  dateCreated: Instant,
-                  dateModified: Option[Instant])
+//case class Agenda(id: Option[Int],
+//                  name: String,
+//                  description: String,
+//                  owner: User,
+//                  appointment: Set[Appointment],
+//                  dateCreated: Instant,
+//                  dateModified: Option[Instant])
