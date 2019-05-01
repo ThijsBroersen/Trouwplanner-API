@@ -11,7 +11,7 @@ import weddingplanner.ns.Appointment
 import weddingplanner.ns.Agenda
 
 object SampleData {
-  def loadSample(graph: Graph): Task[Unit] =
+  def loadSample(graph: Graph) =
     for {
       _ <- graph.purge
       _places <- for {
@@ -272,7 +272,7 @@ object SampleData {
           _appointment <- graph + Appointment
           _id          <- _appointment --- Label.P.`@id` --> (graph.iri + "/appointment/1")
           _agenda      <- _appointment --- schema.isPartOf --> _agendas.a1.agenda
-          _startDate   <- _appointment --- Appointment.keys.startDate --> Instant.parse("2019-04-03T10:15:00.00Z")
+          _startDate   <- _appointment --- schema.startDate --> Instant.parse("2019-04-03T10:15:00.00Z")
         } yield
           new {
             val appointment = _appointment
@@ -284,7 +284,7 @@ object SampleData {
           _appointment <- graph + Appointment
           _id          <- _appointment --- Label.P.`@id` --> (graph.iri + "/appointment/1")
           _agenda      <- _appointment --- schema.isPartOf --> _agendas.a2.agenda
-          _startDate   <- _appointment --- Appointment.keys.startDate --> Instant.parse("2019-05-15T14:00:00.00Z")
+          _startDate   <- _appointment --- schema.startDate --> Instant.parse("2019-05-15T14:00:00.00Z")
         } yield
           new {
             val appointment = _appointment

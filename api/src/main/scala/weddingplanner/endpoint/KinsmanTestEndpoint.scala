@@ -6,21 +6,27 @@ import java.time.Instant
 import cats.effect.IO
 import io.finch.Endpoint
 import lspace._
-import lspace.codec.{Decoder, NativeTypeDecoder}
+import lspace.codec.{jsonld, ActiveContext, NativeTypeDecoder, NativeTypeEncoder}
 import lspace.decode.{DecodeJson, DecodeJsonLD}
+import lspace.encode.{EncodeJson, EncodeJsonLD, EncodeText}
 import lspace.ns.vocab.schema
 import lspace.provider.detached.DetachedGraph
-import lspace.provider.mem.MemGraph
-import lspace.services.rest.endpoints.TraversalService
-import lspace.structure.{Graph, Node, Ontology, OntologyDef, Property, PropertyDef, TypedProperty}
+import lspace.services.LApplication
 import monix.eval.Task
 import shapeless.{:+:, CNil, HNil}
-import weddingplanner.ns.{agenda, Agenda, Appointment, KinsmanTest}
+import weddingplanner.ns.KinsmanTest
 
 import scala.util.{Failure, Success, Try}
 
-case class KinsmanTestEndpoint(peopleGraph: Graph)(implicit val baseDecoder: lspace.codec.NativeTypeDecoder,
-                                                   val baseEncoder: lspace.codec.NativeTypeEncoder)
+object KinsmanTestEndpoint {
+  def apply(peopleGraph: Graph, activeContext: ActiveContext = ActiveContext())(
+      implicit baseDecoder: lspace.codec.NativeTypeDecoder,
+      baseEncoder: lspace.codec.NativeTypeEncoder): KinsmanTestEndpoint =
+    new KinsmanTestEndpoint(peopleGraph)(baseDecoder, baseEncoder, activeContext)
+}
+class KinsmanTestEndpoint(peopleGraph: Graph)(implicit val baseDecoder: lspace.codec.NativeTypeDecoder,
+                                              val baseEncoder: lspace.codec.NativeTypeEncoder,
+                                              activeContext: ActiveContext)
     extends Endpoint.Module[IO] {
 
   implicit val ec = monix.execution.Scheduler.global
@@ -28,7 +34,10 @@ case class KinsmanTestEndpoint(peopleGraph: Graph)(implicit val baseDecoder: lsp
   type Json = baseDecoder.Json
   implicit val bd: NativeTypeDecoder.Aux[Json] = baseDecoder.asInstanceOf[NativeTypeDecoder.Aux[Json]]
 
-  implicit val decoder = lspace.codec.Decoder(DetachedGraph)
+  import lspace.services.codecs.Decode._
+  import DecodeJson._
+  import DecodeJsonLD._
+  implicit val decoder = lspace.codec.jsonld.Decoder(DetachedGraph)
 
   import io.finch._
   import lspace.Implicits.AsyncGuide.guide
@@ -52,25 +61,17 @@ case class KinsmanTestEndpoint(peopleGraph: Graph)(implicit val baseDecoder: lsp
 
   /**
     * tests if a kinsman path exists between two persons
+    * TODO: update graph with latest (remote) data
     */
   val kinsman: Endpoint[IO, Boolean :+: Boolean :+: CNil] = {
     import shapeless.::
     import io.finch.internal.HttpContent
-    implicit val decoder = Decoder(DetachedGraph)
-    implicit val d1 = io.finch.Decode
-      .instance[Task[KinsmanTest], lspace.services.codecs.Application.JsonLD] { (b, cs) =>
-        Right(
-          DecodeJsonLD
-            .bodyJsonldTyped(KinsmanTest.ontology, KinsmanTest.fromNode)
-            .decode(b.asString(cs)))
-      }
 
-    implicit val d2 = io.finch.Decode.instance[Task[KinsmanTest], Application.Json] { (b, cs) =>
-      Right(
-        DecodeJson
-          .bodyJsonTyped(KinsmanTest.ontology, KinsmanTest.fromNode)
-          .decode(b.asString(cs)))
-    }
+    implicit val bodyJsonldTyped = DecodeJsonLD
+      .bodyJsonldTyped(KinsmanTest.ontology, KinsmanTest.fromNode)
+
+    implicit val jsonToNodeToT = DecodeJson
+      .jsonToNodeToT(KinsmanTest.ontology, KinsmanTest.fromNode)
 
     get(params[String]("iri") :: paramOption[Int]("degree"))
       .mapOutputAsync {
@@ -92,7 +93,7 @@ case class KinsmanTestEndpoint(peopleGraph: Graph)(implicit val baseDecoder: lsp
             else Task.now(NotAcceptable(new Exception("one or both of the wedding couple could not be found")))
           } yield result).toIO
         case _ => Task.now(NotAcceptable(new Exception("invalid parameters"))).toIO
-      } :+: post(body[Task[KinsmanTest], lspace.services.codecs.Application.JsonLD /* :+: Application.Json :+: CNil*/ ])
+      } :+: post(body[Task[KinsmanTest], lspace.services.codecs.Application.JsonLD :+: Application.Json :+: CNil])
       .mapOutputAsync {
         case task =>
           task
@@ -135,5 +136,22 @@ case class KinsmanTestEndpoint(peopleGraph: Graph)(implicit val baseDecoder: lsp
       }
   }
 
-  val api = "kinsman" :: kinsman
+  lazy val api = "kinsman" :: kinsman
+
+  lazy val compiled: Endpoint.Compiled[IO] = {
+    type Json = baseEncoder.Json
+    implicit val be: NativeTypeEncoder.Aux[Json] = baseEncoder.asInstanceOf[NativeTypeEncoder.Aux[Json]]
+
+    import lspace.services.codecs.Encode._
+    implicit val encoder = jsonld.Encoder.apply(be)
+
+    import EncodeText._
+    import EncodeJson._
+    import EncodeJsonLD._
+
+    Bootstrap
+      .configure(enableMethodNotAllowed = true, enableUnsupportedMediaType = true)
+      .serve[Text.Plain :+: Application.Json :+: LApplication.JsonLD :+: CNil](api)
+      .compile
+  }
 }

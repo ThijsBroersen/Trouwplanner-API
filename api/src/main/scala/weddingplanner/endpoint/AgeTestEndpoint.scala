@@ -1,7 +1,6 @@
 package weddingplanner.endpoint
 
-import java.net.URLEncoder
-import java.time.Instant
+import java.time.{Instant, LocalDate}
 
 import cats.effect.IO
 import io.finch.Endpoint
@@ -14,20 +13,20 @@ import lspace.provider.detached.DetachedGraph
 import lspace.services.LApplication
 import monix.eval.Task
 import shapeless.{:+:, CNil, HNil}
-import weddingplanner.ns.PartnerTest
+import weddingplanner.ns.AgeTest
 
 import scala.util.{Failure, Success, Try}
 
-object PartnerTestEndpoint {
-  def apply(peopleGraph: Graph, activeContext: ActiveContext = ActiveContext())(
+object AgeTestEndpoint {
+  def apply(graph: Graph, activeContext: ActiveContext = ActiveContext())(
       implicit baseDecoder: lspace.codec.NativeTypeDecoder,
-      baseEncoder: lspace.codec.NativeTypeEncoder): PartnerTestEndpoint =
-    new PartnerTestEndpoint(peopleGraph)(baseDecoder, baseEncoder, activeContext)
+      baseEncoder: lspace.codec.NativeTypeEncoder): AgeTestEndpoint =
+    new AgeTestEndpoint(graph)(baseDecoder, baseEncoder, activeContext)
 }
 
-class PartnerTestEndpoint(peopleGraph: Graph)(implicit val baseDecoder: lspace.codec.NativeTypeDecoder,
-                                              val baseEncoder: lspace.codec.NativeTypeEncoder,
-                                              activeContext: ActiveContext)
+class AgeTestEndpoint(graph: Graph)(implicit val baseDecoder: lspace.codec.NativeTypeDecoder,
+                                    val baseEncoder: lspace.codec.NativeTypeEncoder,
+                                    activeContext: ActiveContext)
     extends Endpoint.Module[IO] {
 
   implicit val ec = monix.execution.Scheduler.global
@@ -36,8 +35,6 @@ class PartnerTestEndpoint(peopleGraph: Graph)(implicit val baseDecoder: lspace.c
   implicit val bd: NativeTypeDecoder.Aux[Json] = baseDecoder.asInstanceOf[NativeTypeDecoder.Aux[Json]]
 
   import lspace.services.codecs.Decode._
-  import DecodeJson._
-  import DecodeJsonLD._
   implicit val decoder = lspace.codec.jsonld.Decoder(DetachedGraph)
 
   import io.finch._
@@ -58,62 +55,58 @@ class PartnerTestEndpoint(peopleGraph: Graph)(implicit val baseDecoder: lspace.c
       } yield graph1
   }
 
-  import lspace.decode.DecodeJsonLD._
-
   /**
     * tests if a kinsman path exists between two
     * TODO: update graph with latest (remote) data
     */
-  val partner: Endpoint[IO, Boolean :+: Boolean :+: CNil] = {
-    import shapeless.::
-    import io.finch.internal.HttpContent
+  val age: Endpoint[IO, Boolean :+: Boolean :+: CNil] = {
     implicit val bodyJsonldTyped = DecodeJsonLD
-      .bodyJsonldTyped(PartnerTest.ontology, PartnerTest.fromNode)
+      .bodyJsonldTyped(AgeTest.ontology, AgeTest.fromNode)
 
     implicit val jsonToNodeToT = DecodeJson
-      .jsonToNodeToT(PartnerTest.ontology, PartnerTest.fromNode)
+      .jsonToNodeToT(AgeTest.ontology, AgeTest.fromNode)
 
-    get(params[String]("iri"))
+    import shapeless.::
+    get(param[String]("iri") :: param[Int]("minimumAge"))
       .mapOutputAsync {
-        case Nil =>
-          Task.now(NotAcceptable(new Exception("a partnertest must have persons as input"))).toIO
-        case persons =>
+        case person :: minimumAge :: HNil =>
           (for {
             result <- g
               .N()
-              .hasIri(persons.toSet)
-              .has(schema.spouse)
+              .hasIri(person)
+              .has(schema.birthDate, P.lt(LocalDate.now().minusYears(minimumAge)))
               .head()
-              .withGraph(peopleGraph)
+              .withGraph(graph)
               .headOptionF
               .map(_.isDefined)
               .map(Ok(_))
           } yield result).toIO
 //        case _ => Task.now(NotAcceptable(new Exception("invalid parameters"))).toIO
-      } :+: post(body[Task[PartnerTest], lspace.services.codecs.Application.JsonLD :+: Application.Json :+: CNil])
+      } :+: post(body[Task[AgeTest], lspace.services.codecs.Application.JsonLD :+: Application.Json :+: CNil])
       .mapOutputAsync {
         case task =>
           task.flatMap {
-            case partnerTest: PartnerTest if partnerTest.result.isDefined =>
+            case ageTest: AgeTest if ageTest.result.isDefined =>
               Task.now(NotAcceptable(new Exception("result should not yet be defined")))
-            case partnerTest: PartnerTest =>
+            case ageTest: AgeTest =>
+              println(s"agetest: ${ageTest.person} ${ageTest.minimumAge}")
               for {
-                isRelated <- g.N
-                  .hasIri(partnerTest.person)
-                  .has(schema.spouse)
+                ageSatisfaction <- g.N
+                  .hasIri(ageTest.person)
+                  .has(schema.birthDate, P.lt(LocalDate.now().minusYears(ageTest.minimumAge)))
                   .head()
-                  .withGraph(peopleGraph)
+                  .withGraph(graph)
                   .headOptionF
                   .map(_.isDefined)
               } yield {
-                Ok(isRelated)
+                Ok(ageSatisfaction)
               }
             case _ => Task.now(NotAcceptable(new Exception("invalid parameters")))
           }.toIO
       }
   }
 
-  val api = "partner" :: partner
+  val api = "age" :: age
 
   lazy val compiled: Endpoint.Compiled[IO] = {
     type Json = baseEncoder.Json
@@ -122,9 +115,9 @@ class PartnerTestEndpoint(peopleGraph: Graph)(implicit val baseDecoder: lspace.c
     import lspace.services.codecs.Encode._
     implicit val encoder = jsonld.Encoder.apply(be)
 
-    import EncodeText._
     import EncodeJson._
     import EncodeJsonLD._
+    import EncodeText._
 
     Bootstrap
       .configure(enableMethodNotAllowed = true, enableUnsupportedMediaType = true)

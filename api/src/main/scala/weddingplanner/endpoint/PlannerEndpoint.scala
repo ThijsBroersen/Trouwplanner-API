@@ -5,14 +5,14 @@ import java.time.Instant
 import cats.effect.IO
 import io.finch.{Endpoint, Ok}
 import lspace._
+import lspace.ns.vocab.schema
 import lspace.provider.mem.MemGraph
 import lspace.structure.{ClassType, Graph}
-import lspace.services.rest.endpoints.TraversalService
 import monix.eval.Task
 import monix.reactive.Observable
 import shapeless.{HList, HNil}
 import scribe._
-import weddingplanner.ns.{agenda, Agenda, Appointment, Place}
+import weddingplanner.ns.{agenda, Agenda, Appointment}
 
 import scala.util.{Failure, Success, Try}
 
@@ -20,10 +20,10 @@ case class PlannerEndpoint[Json](agendaGraph: Graph, personGraph: Graph, placeGr
     implicit ndecoder: lspace.codec.NativeTypeDecoder.Aux[Json],
     nencoder: lspace.codec.NativeTypeEncoder.Aux[Json])
     extends Endpoint.Module[IO] {
-  val agendaService      = TraversalService(agendaGraph)
-  val personService      = TraversalService(personGraph)
-  val placeService       = TraversalService(placeGraph)
-  val appointmentService = TraversalService(appointmentGraph)
+  val agendaService      = OntologyEndpoint(agendaGraph, Agenda.ontology)
+  val personService      = OntologyEndpoint(personGraph, schema.Person)
+  val placeService       = OntologyEndpoint(placeGraph, schema.Place)
+  val appointmentService = OntologyEndpoint(appointmentGraph, Appointment)
 
   implicit val ec = monix.execution.Scheduler.global
 
@@ -55,7 +55,8 @@ case class PlannerEndpoint[Json](agendaGraph: Graph, personGraph: Graph, placeGr
             graph <- allGraph
             placesAndAppointments <- g.N
               .hasLabel(Agenda.ontology)
-              .project(t => t, _.out(agenda).out(Agenda.keys.appointment).hasLabel(Appointment.ontology))
+              .project()
+              .by(_.out(agenda).out(Agenda.keys.appointment).hasLabel(Appointment.ontology))
               .withGraph(graph)
               .toListF
               .map(_.groupBy(_._1)

@@ -10,9 +10,11 @@ import lspace.structure.Graph
 import lspace.util.SampleGraph
 import monix.eval.Task
 import org.scalatest.{AsyncWordSpec, BeforeAndAfterAll, FutureOutcome, Matchers}
-import weddingplanner.ns.PartnerTest
+import weddingplanner.ns.AgeTest
 
-class PartnerTestEndpointSpec extends AsyncWordSpec with Matchers with BeforeAndAfterAll {
+import scala.collection.immutable.ListMap
+
+class AgeTestEndpointSpec extends AsyncWordSpec with Matchers with BeforeAndAfterAll {
 
   import lspace.Implicits.Scheduler.global
   import lspace.encode.EncodeJsonLD._
@@ -24,12 +26,12 @@ class PartnerTestEndpointSpec extends AsyncWordSpec with Matchers with BeforeAnd
   implicit val ndecoder       = lspace.codec.argonaut.NativeTypeDecoder
   implicit val activeContext  = ActiveContext()
 
-  val partnerService = PartnerTestEndpoint(sampleGraph)
+  val ageService = AgeTestEndpoint(sampleGraph)
 
   lazy val initTask = (for {
     sample <- SampleGraph.loadSocial(sampleGraph)
     _ <- for {
-      _ <- sample.persons.Gray.person --- schema.spouse --> sample.persons.Levi.person
+      _ <- sample.persons.Yoshio.person --- schema.birthDate --> sample.persons.Yoshio.birthdate.to.value
     } yield ()
   } yield sample).memoizeOnSuccess
 
@@ -38,20 +40,19 @@ class PartnerTestEndpointSpec extends AsyncWordSpec with Matchers with BeforeAnd
       super.withFixture(test).toFuture
     })
   }
-  "A PartnerEndpoint" should {
-    "test positive for a spouse-relation for Gray or Levi" in {
+  "A AgeTestEndpoint" should {
+    "test positive for a minimum age of 18 for Yoshio" in {
       (for {
         sample <- initTask
-        gray = sample.persons.Gray.person
-        levi = sample.persons.Levi.person
-        test = PartnerTest(Set(gray.iri, levi.iri))
+        yoshio = sample.persons.Yoshio.person
+        test   = AgeTest(yoshio.iri, 18)
         node <- test.toNode
       } yield {
         val input = Input
-          .post("/partner")
+          .post("/age")
           .withBody[LApplication.JsonLD](node)
-        partnerService
-          .partner(input)
+        ageService
+          .age(input)
           .awaitOutput()
           .map { output =>
             output.isRight shouldBe true
@@ -62,42 +63,18 @@ class PartnerTestEndpointSpec extends AsyncWordSpec with Matchers with BeforeAnd
           .getOrElse(fail("endpoint does not match"))
       }).runToFuture
     }
-    "test positive for a spouse-relation for Gray or Stan" in {
+    "test negative for a minimun age of 65 for Yoshio" in {
       (for {
         sample <- initTask
-        gray = sample.persons.Gray.person
-        stan = sample.persons.Stan.person
-        test = PartnerTest(Set(gray.iri, stan.iri))
+        yoshio = sample.persons.Yoshio.person
+        test   = AgeTest(yoshio.iri, 65)
         node <- test.toNode
       } yield {
         val input = Input
-          .post("/partner")
+          .post("/age")
           .withBody[LApplication.JsonLD](node)
-        partnerService
-          .partner(input)
-          .awaitOutput()
-          .map { output =>
-            output.isRight shouldBe true
-            val response = output.right.get
-            response.status shouldBe Status.Ok
-            response.value.tail.get.head.get shouldBe true
-          }
-          .getOrElse(fail("endpoint does not match"))
-      }).runToFuture
-    }
-    "test negative for a spouse-relation for Stan or Garrison" in {
-      (for {
-        sample <- initTask
-        stan     = sample.persons.Stan.person
-        garrison = sample.persons.Garrison.person
-        test     = PartnerTest(Set(stan.iri, garrison.iri))
-        node <- test.toNode
-      } yield {
-        val input = Input
-          .post("/partner")
-          .withBody[LApplication.JsonLD](node)
-        partnerService
-          .partner(input)
+        ageService
+          .age(input)
           .awaitOutput()
           .map { output =>
             output.isRight shouldBe true
@@ -109,19 +86,18 @@ class PartnerTestEndpointSpec extends AsyncWordSpec with Matchers with BeforeAnd
       }).runToFuture
     }
   }
-  "A compiled PartnerEndpoint" should {
-    "test positive for a spouse-relation for Gray or Levi" in {
+  "A compiled AgeTestEndpoint" should {
+    "test positive for a minimum age of 18 for Yoshio" in {
       (for {
         sample <- initTask
-        gray = sample.persons.Gray.person
-        levi = sample.persons.Levi.person
-        test = PartnerTest(Set(gray.iri, levi.iri))
+        yoshio = sample.persons.Yoshio.person
+        test   = AgeTest(yoshio.iri, 18)
         node <- test.toNode
         input = Input
-          .post("/partner")
+          .post("/age")
           .withBody[LApplication.JsonLD](node)
         _ <- Task.fromIO(
-          partnerService
+          ageService
             .compiled(input.request)
             .map {
               case (t, Left(e)) => fail()
@@ -131,39 +107,17 @@ class PartnerTestEndpointSpec extends AsyncWordSpec with Matchers with BeforeAnd
             })
       } yield succeed).runToFuture
     }
-    "test positive for a spouse-relation for Gray or Stan" in {
+    "test negative for a minimun age of 65 for Yoshio" in {
       (for {
         sample <- initTask
-        gray = sample.persons.Gray.person
-        stan = sample.persons.Stan.person
-        test = PartnerTest(Set(gray.iri, stan.iri))
+        yoshio = sample.persons.Yoshio.person
+        test   = AgeTest(yoshio.iri, 65)
         node <- test.toNode
         input = Input
-          .post("/partner")
+          .post("/age")
           .withBody[LApplication.JsonLD](node)
         _ <- Task.fromIO(
-          partnerService
-            .compiled(input.request)
-            .map {
-              case (t, Left(e)) => fail()
-              case (t, Right(r)) =>
-                r.status shouldBe Status.Ok
-                r.contentString shouldBe "true"
-            })
-      } yield succeed).runToFuture
-    }
-    "test negative for a spouse-relation for Stan or Garrison" in {
-      (for {
-        sample <- initTask
-        stan     = sample.persons.Stan.person
-        garrison = sample.persons.Garrison.person
-        test     = PartnerTest(Set(stan.iri, garrison.iri))
-        node <- test.toNode
-        input = Input
-          .post("/partner")
-          .withBody[LApplication.JsonLD](node)
-        _ <- Task.fromIO(
-          partnerService
+          ageService
             .compiled(input.request)
             .map {
               case (t, Left(e)) => fail()
