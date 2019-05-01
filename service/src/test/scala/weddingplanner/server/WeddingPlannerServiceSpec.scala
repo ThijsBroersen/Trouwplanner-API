@@ -14,25 +14,25 @@ import weddingplanner.ns.Agenda
 class WeddingPlannerServiceSpec extends LServiceSpec with BeforeAndAfterAll {
 
   implicit val lservice: LService = WeddingPlannerService
-  println(WeddingPlannerService.api.toString)
 
   import lspace.Implicits.Scheduler.global
   import lspace.codec.argonaut._
-  val encoder: lspace.codec.Encoder = lspace.codec.Encoder(nativeEncoder)
+  val encoder: lspace.codec.jsonld.Encoder = lspace.codec.jsonld.Encoder(nativeEncoder)
   import encoder._
   import lspace.encode.EncodeJson._
   import lspace.services.codecs.Encode._
 
   "The Wedding-planner" must {
-    WeddingPlannerService.agendaService.service.labeledApiTests
-    WeddingPlannerService.appointmentService.service.labeledApiTests
-    WeddingPlannerService.personService.service.labeledApiTests
-    WeddingPlannerService.placeService.service.labeledApiTests
+    WeddingPlannerService.agendaService.labeledApiTests
+    WeddingPlannerService.appointmentService.labeledApiTests
+    WeddingPlannerService.personService.labeledApiTests
+    WeddingPlannerService.placeService.labeledApiTests
     WeddingPlannerService.reportToMarriageService.service.labeledApiTests
     WeddingPlannerService.weddingReservationService.service.labeledApiTests
 
-    val label = WeddingPlannerService.agendaService.service.label
+    val label = WeddingPlannerService.agendaService.label
     s"have an $label-api which accepts json" in {
+      implicit val activeContext = ActiveContext()
       import lspace.services.util._
       (for {
         node <- DetachedGraph.nodes.create(Agenda.ontology)
@@ -59,6 +59,9 @@ class WeddingPlannerServiceSpec extends LServiceSpec with BeforeAndAfterAll {
             response.contentType shouldBe Some("application/json")
           }
         }
+//        _ <- Task.deferFuture {
+//          lservice.service(Input.get(s"/agenda/"))
+//        }
       } yield succeed).runToFuture
     }
 
@@ -74,15 +77,27 @@ class WeddingPlannerServiceSpec extends LServiceSpec with BeforeAndAfterAll {
       }
     }
 
-    "return active ontology for path" in {
+    "return active context for path /person/context" in {
       import lspace.services.util._
       val input = Input
-        .get("/person.jsonld")
+        .get("/person/context")
         .withHeaders("Accept" -> "application/ld+json")
       val res = WeddingPlannerService.service(input.request)
 
       res.map { response =>
         response.status shouldBe Status.Ok
+      }
+    }
+    "return active context for path /agenda/context" in {
+      import lspace.services.util._
+      val input = Input
+        .get("/agenda/context")
+        .withHeaders("Accept" -> "application/ld+json")
+      val res = WeddingPlannerService.service(input.request)
+
+      res.map { response =>
+        response.status shouldBe Status.Ok
+//        response.contentString shouldBe """@context: {}"""
       }
     }
 
