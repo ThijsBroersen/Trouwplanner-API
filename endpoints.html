@@ -26,186 +26,35 @@
 <p>There are multiple endpoints, each has its own purpose.</p>
 <h2 id="data-services">Data services</h2>
 <p>Data services are the main storage for data. 
-They are support a traditional rest-api to allow for all crud-operations (if authorized).</p>
+They are support a traditional rest-api to allow for all crud-operations (if authorized).
+All api’s are dynamic. The active context is used to deconstruct url-paths. The api’s use the following structures:
+<code class="highlighter-rouge">http://example.org/{label}/{id}</code> or
+<code class="highlighter-rouge">http://example.org/{label}/{id}/{property}</code> or
+<code class="highlighter-rouge">http://example.org/{label}/{id}/{property}/{property}</code>
+The active context determined where the property-name resolved to and whether is an out-going or an in-coming relation to the object.</p>
+
 <h3 id="agenda">Agenda</h3>
-<p>The agenda-endpoint is an service which registers agenda’s</p>
-<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
-  </span><span class="s2">"@id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sptth://example.test/Agenda"</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"@type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"@class"</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"@label"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-    </span><span class="s2">"en"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Agenda"</span><span class="w">
-  </span><span class="p">},</span><span class="w">
-  </span><span class="s2">"@comment"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-    </span><span class="s2">"en"</span><span class="p">:</span><span class="w"> </span><span class="s2">"An appointment diary"</span><span class="w">
-  </span><span class="p">},</span><span class="w">
-  </span><span class="s2">"@extends"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
-    </span><span class="s2">"https://schema.org/CreativeWork"</span><span class="w">
-  </span><span class="p">],</span><span class="w">
-  </span><span class="s2">"@properties"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
-   </span><span class="p">{</span><span class="w">
-     </span><span class="s2">"@id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sptth://example.test/Agenda/owner"</span><span class="p">,</span><span class="w">
-     </span><span class="s2">"@type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"@property"</span><span class="p">,</span><span class="w">
-     </span><span class="s2">"@label"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-       </span><span class="s2">"en"</span><span class="p">:</span><span class="w"> </span><span class="s2">"owner"</span><span class="w">
-     </span><span class="p">},</span><span class="w">
-     </span><span class="s2">"@comment"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-       </span><span class="s2">"en"</span><span class="p">:</span><span class="w"> </span><span class="s2">"A person or organization who owns something."</span><span class="w">
-     </span><span class="p">},</span><span class="w">
-     </span><span class="s2">"@range"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://ns.l-space.eu/User"</span><span class="w">
-   </span><span class="p">},</span><span class="w">
-   </span><span class="p">{</span><span class="w">
-     </span><span class="s2">"@id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sptth://example.test/Agenda/appointment"</span><span class="p">,</span><span class="w">
-     </span><span class="s2">"@type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"@property"</span><span class="p">,</span><span class="w">
-     </span><span class="s2">"@label"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-       </span><span class="s2">"en"</span><span class="p">:</span><span class="w"> </span><span class="s2">"appointment"</span><span class="w">
-     </span><span class="p">},</span><span class="w">
-     </span><span class="s2">"@range"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sptth://example.test/Appointment"</span><span class="w">
-   </span><span class="p">},</span><span class="w">
-   </span><span class="p">{</span><span class="w">
-     </span><span class="s2">"@id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://schema.org/dateCreated"</span><span class="p">,</span><span class="w">
-     </span><span class="s2">"@type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"@property"</span><span class="p">,</span><span class="w">
-     </span><span class="s2">"@label"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-       </span><span class="s2">"en"</span><span class="p">:</span><span class="w"> </span><span class="s2">"dateCreated"</span><span class="w">
-     </span><span class="p">},</span><span class="w">
-     </span><span class="s2">"@comment"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-       </span><span class="s2">"en"</span><span class="p">:</span><span class="w"> </span><span class="s2">"The date on which the CreativeWork was created or the item was added to a DataFeed."</span><span class="w">
-     </span><span class="p">},</span><span class="w">
-     </span><span class="s2">"@range"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
-       </span><span class="s2">"@datetime"</span><span class="p">,</span><span class="w">
-       </span><span class="s2">"@date"</span><span class="w">
-     </span><span class="p">]</span><span class="w">
-   </span><span class="p">},</span><span class="w">
-   </span><span class="p">{</span><span class="w">
-     </span><span class="s2">"@id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://schema.org/dateModified"</span><span class="p">,</span><span class="w">
-     </span><span class="s2">"@type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"@property"</span><span class="p">,</span><span class="w">
-     </span><span class="s2">"@label"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-       </span><span class="s2">"en"</span><span class="p">:</span><span class="w"> </span><span class="s2">"dateModified"</span><span class="w">
-     </span><span class="p">},</span><span class="w">
-     </span><span class="s2">"@comment"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-       </span><span class="s2">"en"</span><span class="p">:</span><span class="w"> </span><span class="s2">"The date on which the CreativeWork was created or the item was added to a DataFeed."</span><span class="w">
-     </span><span class="p">},</span><span class="w">
-     </span><span class="s2">"@range"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
-       </span><span class="s2">"@datetime"</span><span class="p">,</span><span class="w">
-       </span><span class="s2">"@date"</span><span class="w">
-     </span><span class="p">]</span><span class="w">
-   </span><span class="p">},</span><span class="w">
-   </span><span class="p">{</span><span class="w">
-     </span><span class="s2">"@id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://schema.org/identifier"</span><span class="p">,</span><span class="w">
-     </span><span class="s2">"@type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"@property"</span><span class="p">,</span><span class="w">
-     </span><span class="s2">"@label"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-       </span><span class="s2">"en"</span><span class="p">:</span><span class="w"> </span><span class="s2">"identifier"</span><span class="w">
-     </span><span class="p">},</span><span class="w">
-     </span><span class="s2">"@comment"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-       </span><span class="s2">"en"</span><span class="p">:</span><span class="w"> </span><span class="s2">"The identifier property represents any kind of identifier for any kind of Thing, such as ISBNs, GTIN codes, UUIDs etc. Schema.org provides dedicated properties for representing many of these, either as textual strings or as URL (URI) links. See background notes for more details."</span><span class="w">
-     </span><span class="p">},</span><span class="w">
-     </span><span class="s2">"@range"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
-       </span><span class="s2">"@string"</span><span class="p">,</span><span class="w">
-       </span><span class="s2">"@url"</span><span class="w">
-     </span><span class="p">]</span><span class="w">
-   </span><span class="p">},</span><span class="w">
-   </span><span class="p">{</span><span class="w">
-     </span><span class="s2">"@id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://schema.org/name"</span><span class="p">,</span><span class="w">
-     </span><span class="s2">"@type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"@property"</span><span class="p">,</span><span class="w">
-     </span><span class="s2">"@label"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-       </span><span class="s2">"en"</span><span class="p">:</span><span class="w"> </span><span class="s2">"name"</span><span class="w">
-     </span><span class="p">},</span><span class="w">
-     </span><span class="s2">"@comment"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-       </span><span class="s2">"en"</span><span class="p">:</span><span class="w"> </span><span class="s2">"The name of the item."</span><span class="w">
-     </span><span class="p">},</span><span class="w">
-     </span><span class="s2">"@range"</span><span class="p">:</span><span class="w"> </span><span class="s2">"@string"</span><span class="w">
-   </span><span class="p">},</span><span class="w">
-   </span><span class="p">{</span><span class="w">
-     </span><span class="s2">"@id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://schema.org/description"</span><span class="p">,</span><span class="w">
-     </span><span class="s2">"@type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"@property"</span><span class="p">,</span><span class="w">
-     </span><span class="s2">"@label"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-       </span><span class="s2">"en"</span><span class="p">:</span><span class="w"> </span><span class="s2">"description"</span><span class="w">
-     </span><span class="p">},</span><span class="w">
-     </span><span class="s2">"@comment"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-       </span><span class="s2">"en"</span><span class="p">:</span><span class="w"> </span><span class="s2">"A description of the item."</span><span class="w">
-     </span><span class="p">},</span><span class="w">
-     </span><span class="s2">"@range"</span><span class="p">:</span><span class="w"> </span><span class="s2">"@string"</span><span class="w">
-   </span><span class="p">}</span><span class="w">
- </span><span class="p">]</span><span class="w">
-</span><span class="p">}</span><span class="w">
-</span></code></pre></div></div>
+<p>The agenda-endpoint is an service which registers agenda’s.
+Active context: <a href="http://api.convenantgemeenten.nl/agenda/context">agenda/context</a></p>
+
 <h3 id="appointment">Appointment</h3>
-<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
-  </span><span class="s2">"@id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sptth://example.test/Appointment"</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"@type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"@class"</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"@label"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-    </span><span class="s2">"en"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Appointment"</span><span class="w">
-  </span><span class="p">},</span><span class="w">
-  </span><span class="s2">"@comment"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-    </span><span class="s2">"en"</span><span class="p">:</span><span class="w"> </span><span class="s2">"An arrangement to meet at a particular time and place."</span><span class="w">
-  </span><span class="p">},</span><span class="w">
-  </span><span class="s2">"@extends"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
-    </span><span class="s2">"https://schema.org/CreativeWork"</span><span class="w">
-  </span><span class="p">],</span><span class="w">
-  </span><span class="s2">"@properties"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
-    </span><span class="s2">"https://schema.org/description"</span><span class="p">,</span><span class="w">
-    </span><span class="s2">"https://schema.org/startDate"</span><span class="p">,</span><span class="w">
-    </span><span class="s2">"https://schema.org/dateModified"</span><span class="p">,</span><span class="w">
-    </span><span class="s2">"https://schema.org/name"</span><span class="p">,</span><span class="w">
-    </span><span class="s2">"https://schema.org/endDate"</span><span class="p">,</span><span class="w">
-    </span><span class="s2">"https://schema.org/identifier"</span><span class="p">,</span><span class="w">
-    </span><span class="s2">"https://schema.org/dateCreated"</span><span class="w">
-  </span><span class="p">]</span><span class="w">
-</span><span class="p">}</span><span class="w">
-</span></code></pre></div></div>
+<p>Active context: <a href="http://api.convenantgemeenten.nl/appointment/context">appointment/context</a></p>
+
 <h3 id="person">Person</h3>
-<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
-  </span><span class="s2">"@id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://schema.org/Person"</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"@type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"@class"</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"@label"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-    </span><span class="s2">"en"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Person"</span><span class="w">
-  </span><span class="p">},</span><span class="w">
-  </span><span class="s2">"@comment"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-    </span><span class="s2">"en"</span><span class="p">:</span><span class="w"> </span><span class="s2">"A person (alive, dead, undead, or fictional)."</span><span class="w">
-  </span><span class="p">},</span><span class="w">
-  </span><span class="s2">"@extends"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
-    </span><span class="s2">"https://schema.org/Thing"</span><span class="w">
-  </span><span class="p">],</span><span class="w">
-  </span><span class="s2">"@properties"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
-    </span><span class="s2">"https://ns.l-space.eu//agenda"</span><span class="p">,</span><span class="w">
-    </span><span class="s2">"https://schema.org/description"</span><span class="p">,</span><span class="w">
-    </span><span class="s2">"https://schema.org/worksFor"</span><span class="p">,</span><span class="w">
-    </span><span class="s2">"https://schema.org/honorificPrefix"</span><span class="p">,</span><span class="w">
-    </span><span class="s2">"https://schema.org/name"</span><span class="p">,</span><span class="w">
-    </span><span class="s2">"https://schema.org/identifier"</span><span class="w">
-  </span><span class="p">]</span><span class="w">
-</span><span class="p">}</span><span class="w">
-</span></code></pre></div></div>
+<p>Active context: <a href="http://api.convenantgemeenten.nl/person/context">person/context</a></p>
+
 <h3 id="place">Place</h3>
-<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
-  </span><span class="s2">"@id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://schema.org/Place"</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"@type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"@class"</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"@label"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-    </span><span class="s2">"en"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Place"</span><span class="w">
-  </span><span class="p">},</span><span class="w">
-  </span><span class="s2">"@comment"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-    </span><span class="s2">"en"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Entities that have a somewhat fixed, physical extension."</span><span class="w">
-  </span><span class="p">},</span><span class="w">
-  </span><span class="s2">"@extends"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
-    </span><span class="s2">"https://schema.org/Thing"</span><span class="w">
-  </span><span class="p">],</span><span class="w">
-  </span><span class="s2">"@properties"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
-    </span><span class="s2">"https://schema.org/description"</span><span class="p">,</span><span class="w">
-    </span><span class="s2">"https://schema.org/review"</span><span class="p">,</span><span class="w">
-    </span><span class="s2">"https://schema.org//address"</span><span class="p">,</span><span class="w">
-    </span><span class="s2">"https://schema.org/name"</span><span class="p">,</span><span class="w">
-    </span><span class="s2">"https://schema.org/identifier"</span><span class="p">,</span><span class="w">
-    </span><span class="s2">"https://schema.org//geo"</span><span class="w">
-  </span><span class="p">]</span><span class="w">
-</span><span class="p">}</span><span class="w">
-</span></code></pre></div></div>
+<p>Active context: <a href="http://api.convenantgemeenten.nl/place/context">place/context</a></p>
 
 <h2 id="process-services">Process services</h2>
 <p>Process services which support stateful resource operations. 
 The available operations depend on the state of the resource (including remote state of linked objects).</p>
 <h3 id="wedding-reservation">Wedding reservation</h3>
-<p>A wedding service mediates in planning a wedding.</p>
+<p>A wedding service mediates in planning a wedding.<br />
+Active context: <a href="http://api.convenantgemeenten.nl/weddingreservation/context">weddingreservation/context</a></p>
 <h3 id="report-of-marriage">Report of marriage</h3>
-<p>A report of marriage is a official notification from the expected wedding couple to the local authorities.</p>
+<p>A report of marriage is a official notification from the expected wedding couple to the local authorities.
+Active context: <a href="http://api.convenantgemeenten.nl/reportofmarriage/context">reportofmarriage/context</a></p>
 
 <h2 id="knowledge-services">Knowledge services</h2>
 <p>Knowlegde services can be queried or asked for information. They are a hotspot or interchange for information. 
@@ -213,6 +62,12 @@ A knowledge service can execute federated queries, this means that the query con
 This can be the result of a query or some sort of assertion.</p>
 <h3 id="kinsman">Kinsman</h3>
 <p>This service can test whether two people are related to some extend. 
+It returns a boolean (<code class="highlighter-rouge">Content-Type: text/boolean</code>)</p>
+<h3 id="partner">Partner</h3>
+<p>This service can test whether either person have a partner (active marriage).
+It returns a boolean (<code class="highlighter-rouge">Content-Type: text/boolean</code>)</p>
+<h3 id="age">Age</h3>
+<p>This service can test if a persons satisfies certain age constraints.
 It returns a boolean (<code class="highlighter-rouge">Content-Type: text/boolean</code>)</p>
 </section></div></div></div></div><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script><script src="/Weddingplanner-API/highlight/highlight.pack.js"></script><script>hljs.configure({languages:['scala','java','bash']});
 hljs.initHighlighting();
