@@ -67,7 +67,9 @@ trait WeddingPlannerService extends LService {
       "end"              -> schema.endDate.iri,
 //      "partnerIn"        -> weddingplanner.ns.spouses.iri,
       "Huwelijk" -> weddingplanner.ns.Marriage.iri,
-      "Babs"     -> weddingplanner.ns.WeddingOfficiant.iri
+      "Babs"     -> weddingplanner.ns.WeddingOfficiant.iri,
+      "Agenda"   -> weddingplanner.ns.Agenda.iri,
+      "afspraak" -> weddingplanner.ns.Agenda.keys.appointment.iri
     ),
     definitions = Map(
       schema.name.iri       -> ActiveProperty(`@type` = `@string` :: Nil, property = schema.name),
@@ -104,7 +106,10 @@ trait WeddingPlannerService extends LService {
       schema.endDate.iri   -> ActiveProperty(`@type` = `@date` :: Nil, property = schema.endDate),
       "partnerIn" -> ActiveProperty(`@type` = schema.Person :: Nil,
                                     `@reverse` = true,
-                                    property = weddingplanner.ns.spouses)
+                                    property = weddingplanner.ns.spouses),
+      weddingplanner.ns.Agenda.keys.appointment.iri -> ActiveProperty(`@type` = weddingplanner.ns.Appointment :: Nil,
+                                                                      property =
+                                                                        weddingplanner.ns.Agenda.keys.appointment)
     )
   )
 
@@ -120,21 +125,10 @@ trait WeddingPlannerService extends LService {
   lazy val kinsmantestService        = KinsmanTestEndpoint(graph, defaultContext)
   lazy val partnertestService        = PartnerTestEndpoint(graph, defaultContext)
 
-  object utils extends Endpoint.Module[IO] {
-    val persist: Endpoint[IO, Unit] = get("_persist") {
-      scribe.info("persisting all graphs")
-      graph.persist
-      io.finch.NoContent[Unit]
-    }
-  }
-
   implicit val encoder: lspace.codec.jsonld.Encoder = lspace.codec.jsonld.Encoder(nativeEncoder)
   import lspace.services.codecs.Encode._
-  //  import lspace.encode.EncodeJson._
   import EncodeJson._
-  import lspace.encode.EncodeJsonLD._
-  import weddingplanner.ns.Appointment
-  import weddingplanner.ns.Agenda
+  import EncodeJsonLD._
 
   object UtilsApi extends Endpoint.Module[IO] {
     import io.finch._
@@ -491,6 +485,11 @@ trait WeddingPlannerService extends LService {
       } yield Ok(data)).toIO
     }
 
+    val persist: Endpoint[IO, Unit] = get("_persist") {
+      scribe.info("persisting all graphs")
+      graph.persist
+      io.finch.NoContent[Unit]
+    }
   }
 
 //  SampleData.loadSample(graph).runSyncUnsafe()(monix.execution.Scheduler.global, CanBlock.permit)
@@ -519,9 +518,8 @@ trait WeddingPlannerService extends LService {
       .serve[LApplication.JsonLD :+: Application.Json :+: CNil](partnertestService.api)
       .serve[LApplication.JsonLD :+: Application.Json :+: CNil](reportToMarriageService.api)
       .serve[LApplication.JsonLD :+: Application.Json :+: CNil](weddingReservationService.api)
-      .serve[LApplication.JsonLD :+: Application.Json :+: CNil](utils.persist)
       .serve[LApplication.JsonLD :+: Application.Json :+: CNil](
-        UtilsApi.clearGraphs :+: UtilsApi.resetGraphs :+: UtilsApi.sigmajs)
+        UtilsApi.clearGraphs :+: UtilsApi.resetGraphs :+: UtilsApi.sigmajs :+: UtilsApi.persist)
       .toService
   }
 }
