@@ -11,6 +11,7 @@ position: 2
   * [Appointment](#appointment)
   * [Person](#person)
   * [Place](#place)
+  * [Wedding Officiant](#weddingofficiant)
 * [Process services](#process-services)
   * [Wedding reservation](#wedding-reservation)
   * [Report of marriage](#report-of-marriage)
@@ -40,6 +41,9 @@ Active context: [person/context](http://convenantgemeenten.nl/person/context)
 
 ### Place
 Active context: [place/context](http://convenantgemeenten.nl/place/context)
+
+### Wedding Officiant
+Active context: [weddingofficiant/context](http://convenantgemeenten.nl/weddingofficiant/context)
 
 ## Process services
 Process services which support stateful resource operations. 
