@@ -39,7 +39,7 @@ object ServicesConfig {
           .loadConfig[ServicesConfig](ConfigFactory.parseString("""
               |{
               |  port : 8081,
-              |  graph : { name : "localhost" }
+              |  graph : { name : "http://localhost" }
               |}
             """.stripMargin))
           .getOrElse(throw new Exception("could not load any config ..."))
