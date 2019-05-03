@@ -28,47 +28,71 @@
 <p>Data services are the main storage for data. 
 They are support a traditional rest-api to allow for all crud-operations (if authorized).
 All api’s are dynamic. The active context is used to deconstruct url-paths. The api’s use the following structures:
-<code class="highlighter-rouge">http://example.org/{label}/{id}</code> or
-<code class="highlighter-rouge">http://example.org/{label}/{id}/{property}</code> or
-<code class="highlighter-rouge">http://example.org/{label}/{id}/{property}/{property}</code>
+GET<code class="highlighter-rouge">http://example.org/{label}/{id}</code> or
+GET<code class="highlighter-rouge">http://example.org/{label}/{id}/{property}</code> or
+GET<code class="highlighter-rouge">http://example.org/{label}/{id}/{property}/{property}</code>
 The active context determined where the property-name resolved to and whether is an out-going or an in-coming relation to the object.</p>
 
 <h3 id="agenda">Agenda</h3>
 <p>The agenda-endpoint is an service which registers agenda’s.
-Active context: <a href="http://api.convenantgemeenten.nl/agenda/context">agenda/context</a></p>
+Active context: <a href="http://convenantgemeenten.nl/agenda/context">agenda/context</a></p>
 
 <h3 id="appointment">Appointment</h3>
-<p>Active context: <a href="http://api.convenantgemeenten.nl/appointment/context">appointment/context</a></p>
+<p>Active context: <a href="http://convenantgemeenten.nl/appointment/context">appointment/context</a></p>
 
 <h3 id="person">Person</h3>
-<p>Active context: <a href="http://api.convenantgemeenten.nl/person/context">person/context</a></p>
+<p>Active context: <a href="http://convenantgemeenten.nl/person/context">person/context</a></p>
 
 <h3 id="place">Place</h3>
-<p>Active context: <a href="http://api.convenantgemeenten.nl/place/context">place/context</a></p>
+<p>Active context: <a href="http://convenantgemeenten.nl/place/context">place/context</a></p>
 
 <h2 id="process-services">Process services</h2>
 <p>Process services which support stateful resource operations. 
 The available operations depend on the state of the resource (including remote state of linked objects).</p>
+
 <h3 id="wedding-reservation">Wedding reservation</h3>
 <p>A wedding service mediates in planning a wedding.<br />
-Active context: <a href="http://api.convenantgemeenten.nl/weddingreservation/context">weddingreservation/context</a></p>
+Active context: <a href="http://convenantgemeenten.nl/weddingreservation/context">weddingreservation/context</a></p>
+
 <h3 id="report-of-marriage">Report of marriage</h3>
 <p>A report of marriage is a official notification from the expected wedding couple to the local authorities.
-Active context: <a href="http://api.convenantgemeenten.nl/reportofmarriage/context">reportofmarriage/context</a></p>
+Active context: <a href="http://convenantgemeenten.nl/reportofmarriage/context">reportofmarriage/context</a></p>
 
 <h2 id="knowledge-services">Knowledge services</h2>
 <p>Knowlegde services can be queried or asked for information. They are a hotspot or interchange for information. 
 A knowledge service can execute federated queries, this means that the query contains parts to be executed on other services. 
 This can be the result of a query or some sort of assertion.</p>
+
 <h3 id="kinsman">Kinsman</h3>
 <p>This service can test whether two people are related to some extend. 
-It returns a boolean (<code class="highlighter-rouge">Content-Type: text/boolean</code>)</p>
+It returns a boolean (<code class="highlighter-rouge">Content-Type: text/boolean</code>)
+Request structure:
+GET<code class="highlighter-rouge">/kinsman?id={id1},{id2}&amp;degree={degree}</code><br />
+or<br />
+GET<code class="highlighter-rouge">/kinsman?id={id1}&amp;id={id2}&amp;degree={degree}</code><br />
+or<br />
+POST <code class="highlighter-rouge">/kinsman</code><br />
+body <code class="highlighter-rouge">{"person2":{"@id":"http://$host/person/$id1"},"person1":{"@id":"http://$host/person/$id2"},"degree":$degree}</code></p>
+
 <h3 id="partner">Partner</h3>
 <p>This service can test whether either person have a partner (active marriage).
-It returns a boolean (<code class="highlighter-rouge">Content-Type: text/boolean</code>)</p>
+It returns a boolean (<code class="highlighter-rouge">Content-Type: text/boolean</code>)
+Request structure:
+GET<code class="highlighter-rouge">/partner?id={id1},{id2}</code><br />
+or<br />
+GET<code class="highlighter-rouge">/partner?id={id1}&amp;id={id2}</code><br />
+or<br />
+POST <code class="highlighter-rouge">/partner</code><br />
+body <code class="highlighter-rouge">{"person":[{"@id":"http://$host/person/$id1"},{"@id":"http://$host/person/$id2"}]}</code></p>
+
 <h3 id="age">Age</h3>
 <p>This service can test if a persons satisfies certain age constraints.
-It returns a boolean (<code class="highlighter-rouge">Content-Type: text/boolean</code>)</p>
+It returns a boolean (<code class="highlighter-rouge">Content-Type: text/boolean</code>)
+Request structure:
+GET<code class="highlighter-rouge">/age?id={id}&amp;minimumAge={age}</code><br />
+or<br />
+POST <code class="highlighter-rouge">/age</code><br />
+body <code class="highlighter-rouge">{"person":{"@id":"http://$host/person/$id1"},"minimumAge":18}</code></p>
 </section></div></div></div></div><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script><script src="/Weddingplanner-API/highlight/highlight.pack.js"></script><script>hljs.configure({languages:['scala','java','bash']});
 hljs.initHighlighting();
               </script><script>((window.gitter = {}).chat = {}).options = {
