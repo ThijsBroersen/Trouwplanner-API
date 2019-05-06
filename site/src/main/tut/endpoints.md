@@ -29,6 +29,10 @@ GET```http://example.org/{label}/{id}/{property}``` or
 GET```http://example.org/{label}/{id}/{property}/{property}```
 The active context determined where the property-name resolved to and whether is an out-going or an in-coming relation to the object.
 
+### Address
+The address-endpoint is an service which registers addresses.
+Active context: [postaladdress/context](http://convenantgemeenten.nl/postaladdress/context)
+
 ### Agenda
 The agenda-endpoint is an service which registers agenda's.
 Active context: [agenda/context](http://convenantgemeenten.nl/agenda/context)
