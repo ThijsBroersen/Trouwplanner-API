@@ -5,7 +5,7 @@ docker run --detach \
     --volume ~/nlx-setup/root.crt:/certs/root.crt:ro \
     --volume ~/nlx-setup/org.crt:/certs/org.crt:ro \
     --volume ~/nlx-setup/org.key:/certs/org.key:ro \
-    --volume service-config.toml:/service-config.toml:ro \
+    --volume ./service-config.toml:/service-config.toml:ro \
     --env DIRECTORY_REGISTRATION_ADDRESS=directory-registration-api.demo.nlx.io:443 \
     --env SELF_ADDRESS=convenantgemeenten.nl:4443 \
     --env SERVICE_CONFIG=/service-config.toml \
