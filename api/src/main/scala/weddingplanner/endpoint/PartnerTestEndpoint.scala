@@ -6,7 +6,7 @@ import java.time.Instant
 import cats.effect.IO
 import io.finch.Endpoint
 import lspace._
-import lspace.codec.{jsonld, ActiveContext, NativeTypeDecoder, NativeTypeEncoder}
+import lspace.codec.{jsonld, ActiveContext, ActiveProperty, NativeTypeDecoder, NativeTypeEncoder}
 import lspace.decode.{DecodeJson, DecodeJsonLD}
 import lspace.encode.{EncodeJson, EncodeJsonLD, EncodeText}
 import lspace.ns.vocab.schema
@@ -16,18 +16,28 @@ import monix.eval.Task
 import shapeless.{:+:, CNil, HNil}
 import weddingplanner.ns.PartnerTest
 
+import scala.collection.immutable.ListMap
 import scala.util.{Failure, Success, Try}
 
 object PartnerTestEndpoint {
-  def apply(peopleGraph: Graph, activeContext: ActiveContext = ActiveContext())(
+  def apply(graph: Graph, activeContext: ActiveContext = ActiveContext())(
       implicit baseDecoder: lspace.codec.NativeTypeDecoder,
       baseEncoder: lspace.codec.NativeTypeEncoder): PartnerTestEndpoint =
-    new PartnerTestEndpoint(peopleGraph)(baseDecoder, baseEncoder, activeContext)
+    new PartnerTestEndpoint(graph)(baseDecoder, baseEncoder, activeContext)
+
+  lazy val activeContext = ActiveContext(
+    `@prefix` = ListMap(
+      "person" -> PartnerTest.keys.person.iri
+    ),
+    definitions = Map(
+      PartnerTest.keys.person.iri -> ActiveProperty(`@type` = schema.Person :: Nil, property = PartnerTest.keys.person)
+    )
+  )
 }
 
-class PartnerTestEndpoint(peopleGraph: Graph)(implicit val baseDecoder: lspace.codec.NativeTypeDecoder,
-                                              val baseEncoder: lspace.codec.NativeTypeEncoder,
-                                              activeContext: ActiveContext)
+class PartnerTestEndpoint(graph: Graph)(implicit val baseDecoder: lspace.codec.NativeTypeDecoder,
+                                        val baseEncoder: lspace.codec.NativeTypeEncoder,
+                                        activeContext: ActiveContext)
     extends Endpoint.Module[IO] {
 
   implicit val ec = monix.execution.Scheduler.global
@@ -73,7 +83,7 @@ class PartnerTestEndpoint(peopleGraph: Graph)(implicit val baseDecoder: lspace.c
     implicit val jsonToNodeToT = DecodeJson
       .jsonToNodeToT(PartnerTest.ontology, PartnerTest.fromNode)
 
-    get(params[String]("iri"))
+    get(params[String]("id"))
       .mapOutputAsync {
         case Nil =>
           Task.now(NotAcceptable(new Exception("a partnertest must have persons as input"))).toIO
@@ -81,10 +91,10 @@ class PartnerTestEndpoint(peopleGraph: Graph)(implicit val baseDecoder: lspace.c
           (for {
             result <- g
               .N()
-              .hasIri(persons.toSet)
+              .hasIri(persons.toSet.map(person => s"${graph.iri}/person/" + person))
               .has(schema.spouse)
               .head()
-              .withGraph(peopleGraph)
+              .withGraph(graph)
               .headOptionF
               .map(_.isDefined)
               .map(Ok(_))
@@ -102,7 +112,7 @@ class PartnerTestEndpoint(peopleGraph: Graph)(implicit val baseDecoder: lspace.c
                   .hasIri(partnerTest.person)
                   .has(schema.spouse)
                   .head()
-                  .withGraph(peopleGraph)
+                  .withGraph(graph)
                   .headOptionF
                   .map(_.isDefined)
               } yield {

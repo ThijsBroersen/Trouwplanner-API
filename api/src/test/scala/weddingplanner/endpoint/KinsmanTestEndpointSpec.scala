@@ -19,11 +19,11 @@ class KinsmanTestEndpointSpec extends AsyncWordSpec with Matchers with BeforeAnd
   import lspace.encode.EncodeJsonLD._
   import lspace.services.codecs.Encode._
 
-  lazy val sampleGraph: Graph = MemGraph("ApiServiceSpec")
-  implicit val nencoder       = lspace.codec.argonaut.NativeTypeEncoder
-  implicit val encoder        = lspace.codec.jsonld.Encoder(nencoder)
-  implicit val ndecoder       = lspace.codec.argonaut.NativeTypeDecoder
-  implicit val activeContext  = ActiveContext()
+  lazy val sampleGraph: Graph     = MemGraph("ApiServiceSpec")
+  implicit val nencoder           = lspace.codec.argonaut.NativeTypeEncoder
+  implicit val encoder            = lspace.codec.jsonld.Encoder(nencoder)
+  implicit val ndecoder           = lspace.codec.argonaut.NativeTypeDecoder
+  implicit lazy val activeContext = KinsmanTestEndpoint.activeContext
 
   val kinsmanService = KinsmanTestEndpoint(sampleGraph)
 

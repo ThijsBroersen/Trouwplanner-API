@@ -2,7 +2,8 @@ package weddingplanner.endpoint
 
 import com.twitter.finagle.http.Status
 import io.finch.Input
-import lspace.codec.ActiveContext
+import lspace.Label.D._
+import lspace.codec.{ActiveContext, ActiveProperty}
 import lspace.ns.vocab.schema
 import lspace.provider.mem.MemGraph
 import lspace.services.codecs.{Application => LApplication}
@@ -24,7 +25,8 @@ class AgeTestEndpointSpec extends AsyncWordSpec with Matchers with BeforeAndAfte
   implicit val nencoder       = lspace.codec.argonaut.NativeTypeEncoder
   implicit val encoder        = lspace.codec.jsonld.Encoder(nencoder)
   implicit val ndecoder       = lspace.codec.argonaut.NativeTypeDecoder
-  implicit val activeContext  = ActiveContext()
+
+  implicit lazy val activeContext = AgeTestEndpoint.activeContext
 
   val ageService = AgeTestEndpoint(sampleGraph)
 

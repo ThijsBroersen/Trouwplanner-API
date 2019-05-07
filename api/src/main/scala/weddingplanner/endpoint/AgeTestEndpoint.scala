@@ -5,7 +5,8 @@ import java.time.{Instant, LocalDate}
 import cats.effect.IO
 import io.finch.Endpoint
 import lspace._
-import lspace.codec.{jsonld, ActiveContext, NativeTypeDecoder, NativeTypeEncoder}
+import Label.D._
+import lspace.codec.{jsonld, ActiveContext, ActiveProperty, NativeTypeDecoder, NativeTypeEncoder}
 import lspace.decode.{DecodeJson, DecodeJsonLD}
 import lspace.encode.{EncodeJson, EncodeJsonLD, EncodeText}
 import lspace.ns.vocab.schema
@@ -15,6 +16,7 @@ import monix.eval.Task
 import shapeless.{:+:, CNil, HNil}
 import weddingplanner.ns.AgeTest
 
+import scala.collection.immutable.ListMap
 import scala.util.{Failure, Success, Try}
 
 object AgeTestEndpoint {
@@ -22,6 +24,17 @@ object AgeTestEndpoint {
       implicit baseDecoder: lspace.codec.NativeTypeDecoder,
       baseEncoder: lspace.codec.NativeTypeEncoder): AgeTestEndpoint =
     new AgeTestEndpoint(graph)(baseDecoder, baseEncoder, activeContext)
+
+  lazy val activeContext = ActiveContext(
+    `@prefix` = ListMap(
+      "person"     -> AgeTest.keys.person.iri,
+      "minimumAge" -> AgeTest.keys.minimumAge.iri
+    ),
+    definitions = Map(
+      AgeTest.keys.person.iri     -> ActiveProperty(`@type` = schema.Person :: Nil, property = AgeTest.keys.person),
+      AgeTest.keys.minimumAge.iri -> ActiveProperty(`@type` = `@int` :: Nil, property = AgeTest.keys.minimumAge)
+    )
+  )
 }
 
 class AgeTestEndpoint(graph: Graph)(implicit val baseDecoder: lspace.codec.NativeTypeDecoder,
@@ -67,13 +80,13 @@ class AgeTestEndpoint(graph: Graph)(implicit val baseDecoder: lspace.codec.Nativ
       .jsonToNodeToT(AgeTest.ontology, AgeTest.fromNode)
 
     import shapeless.::
-    get(param[String]("iri") :: param[Int]("minimumAge"))
+    get(param[String]("id") :: param[Int]("minimumAge"))
       .mapOutputAsync {
         case person :: minimumAge :: HNil =>
           (for {
             result <- g
               .N()
-              .hasIri(person)
+              .hasIri(s"${graph.iri}/person/" + person)
               .has(schema.birthDate, P.lt(LocalDate.now().minusYears(minimumAge)))
               .head()
               .withGraph(graph)
