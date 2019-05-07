@@ -3,6 +3,7 @@ services:
   weddingplanner:
       container_name: weddingplanner
       image: broersen/weddingplanner-service:latest
+      restart: always
       ports:
         - '8081'
         - '9990'
@@ -17,6 +18,7 @@ services:
     depends_on:
       - weddingplanner
     image: nginx:latest
+    restart: always
     ports:
         - "80:80"
         - "443:443"
