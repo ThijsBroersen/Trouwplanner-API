@@ -26,7 +26,7 @@ import monix.execution.schedulers.CanBlock
 import monix.reactive.Observable
 import shapeless.{:+:, CNil, HNil}
 import weddingplanner.endpoint._
-import weddingplanner.ns.{Agenda, Appointment, WeddingOfficiant}
+import weddingplanner.ns.{AgeTest, Agenda, Appointment, KinsmanTest, PartnerTest, WeddingOfficiant}
 
 import scala.collection.immutable.ListMap
 import scala.collection.mutable
@@ -47,6 +47,13 @@ trait WeddingPlannerService extends LService {
       "geboortedatum"    -> schema.birthDate.iri,
       "geboorteplaats"   -> schema.birthPlace.iri,
       "omschrijving"     -> schema.description.iri,
+      "adres"            -> schema.address.iri,
+      "huisnummer"       -> weddingplanner.ns.houseNumber.iri,
+      "huisletter"       -> weddingplanner.ns.houseLetter.iri,
+      "Adres"            -> schema.PostalAddress.iri,
+      "postcode"         -> schema.postalCode.iri,
+      "straatAdres"      -> schema.streetAddress.iri,
+      "Plaats"           -> schema.Place.iri,
       "emailadres"       -> schema.email.iri,
       "telefoonnummer"   -> schema.telephone.iri,
       "contactpunt"      -> schema.contactPoint.iri,
@@ -88,10 +95,14 @@ trait WeddingPlannerService extends LService {
       schema.price.iri          -> ActiveProperty(`@type` = `@double` :: Nil, property = schema.price),
       schema.url.iri            -> ActiveProperty(`@type` = `@string` :: Nil, property = schema.url),
       weddingplanner.ns.ssn.iri -> ActiveProperty(`@type` = `@string` :: Nil, property = weddingplanner.ns.ssn),
+      schema.streetAddress.iri  -> ActiveProperty(`@type` = `@string` :: Nil, property = schema.streetAddress),
+      schema.postalCode.iri     -> ActiveProperty(`@type` = `@string` :: Nil, property = schema.postalCode),
       weddingplanner.ns.streetname.iri -> ActiveProperty(`@type` = `@string` :: Nil,
                                                          property = weddingplanner.ns.streetname),
       weddingplanner.ns.houseLetter.iri -> ActiveProperty(`@type` = `@string` :: Nil,
                                                           property = weddingplanner.ns.houseLetter),
+      weddingplanner.ns.houseNumber.iri -> ActiveProperty(`@type` = `@string` :: Nil,
+                                                          property = weddingplanner.ns.houseNumber),
       schema.addressLocality.iri -> ActiveProperty(`@type` = schema.Place :: Nil, property = schema.addressLocality),
       schema.addressCountry.iri  -> ActiveProperty(`@type` = schema.Country :: Nil, property = schema.addressCountry),
       weddingplanner.ns.underLegalRestraint.iri -> ActiveProperty(`@type` = `@boolean` :: Nil,
@@ -117,13 +128,15 @@ trait WeddingPlannerService extends LService {
   lazy val agendaService             = LabeledNodeApi(graph, Agenda.ontology, defaultContext)
   lazy val personService             = LabeledNodeApi(graph, schema.Person, defaultContext)
   lazy val placeService              = LabeledNodeApi(graph, schema.Place, defaultContext)
+  lazy val addressService            = LabeledNodeApi(graph, schema.PostalAddress, defaultContext)
   lazy val weddingOfficiantService   = LabeledNodeApi(graph, WeddingOfficiant, defaultContext)
   lazy val appointmentService        = LabeledNodeApi(graph, Appointment, defaultContext)
   lazy val weddingReservationService = WeddingReservationEndpoint(graph, defaultContext)
   lazy val reportToMarriageService   = ReportToMarriageEndpoint(graph, defaultContext)
-  lazy val agetestService            = AgeTestEndpoint(graph, defaultContext)
-  lazy val kinsmantestService        = KinsmanTestEndpoint(graph, defaultContext)
-  lazy val partnertestService        = PartnerTestEndpoint(graph, defaultContext)
+
+  lazy val agetestService     = AgeTestEndpoint(graph, AgeTestEndpoint.activeContext)
+  lazy val kinsmantestService = KinsmanTestEndpoint(graph, KinsmanTestEndpoint.activeContext)
+  lazy val partnertestService = PartnerTestEndpoint(graph, PartnerTestEndpoint.activeContext)
 
   implicit val encoder: lspace.codec.jsonld.Encoder = lspace.codec.jsonld.Encoder(nativeEncoder)
   import lspace.services.codecs.Encode._
@@ -157,38 +170,43 @@ trait WeddingPlannerService extends LService {
             .map(_.filter(_._2.nonEmpty))
             .mapEval { record =>
               for {
-                node <- graph.nodes.create(WeddingOfficiant)
-                addressTask <- (for {
+                weddingofficiant <- graph.nodes.create(WeddingOfficiant)
+                _ <- (for {
                   postalCode  <- record.get("postcode").filter(_.nonEmpty)
                   houseNumber <- record.get("huisnummer").filter(_.nonEmpty)
                 } yield {
                   for {
-                    address <- graph.nodes.upsert(s"http://convenantgemeenten.nl/adres/${postalCode}_${houseNumber}",
-                                                  schema.PostalAddress)
+                    address <- graph.nodes.upsert(
+                      s"${graph.iri}/postaladdress/${postalCode.toLowerCase()}_${houseNumber}",
+                      schema.PostalAddress)
                     _ <- Task.gather {
                       Seq(
                         address --- schema.postalCode --> postalCode,
-                        address --- schema.streetAddress --> houseNumber
+                        address --- weddingplanner.ns.houseNumber --> houseNumber
                       ) ++ Seq(
                         record.get("woonplaats").map(address --- schema.addressLocality --> _),
-                        record.get("straat").map(address --- weddingplanner.ns.streetname --> _)
+                        record.get("straat").map(address --- weddingplanner.ns.streetname --> _),
+                        record
+                          .get("straat")
+                          .map(street => address --- schema.streetAddress --> (street + " " + houseNumber))
                       ).flatten
                     }
+                    _ <- weddingofficiant --- schema.address --> address
                   } yield address
                 }).getOrElse(Task.unit)
                 _ <- Task.gather {
                   Seq(
-                    record.get("voornaam").map(v => node --- schema.givenName --> v),
-                    record.get("achternaam").map(v => node --- schema.familyName --> v),
+                    record.get("voornaam").map(v => weddingofficiant --- schema.givenName --> v),
+                    record.get("achternaam").map(v => weddingofficiant --- schema.familyName --> v),
                     record
                       .get("tussenvoegsel")
-                      .map(v => node --- weddingplanner.ns.prepositionName --> v),
+                      .map(v => weddingofficiant --- weddingplanner.ns.prepositionName --> v),
                     record
                       .get("geboortedatum")
                       .flatMap(v => Try(java.time.LocalDate.parse(v, formatter)).toOption)
-                      .map(v => node --- schema.birthDate --> v),
-                    record.get("foto").map(v => node --- schema.image --> v),
-                    record.get("omschrijving").map(v => node --- schema.description --> v)
+                      .map(v => weddingofficiant --- schema.birthDate --> v),
+                    record.get("foto").map(v => weddingofficiant --- schema.image --> v),
+                    record.get("omschrijving").map(v => weddingofficiant --- schema.description --> v)
                   ).flatten
                 }
                 _ <- for {
@@ -216,10 +234,10 @@ trait WeddingPlannerService extends LService {
                     }
                     .getOrElse(Task.unit)
                   _ <- if (email.isDefined || telephone.isDefined)
-                    contactPointTask.flatMap(node --- schema.contactPoint --> _)
+                    contactPointTask.flatMap(weddingofficiant --- schema.contactPoint --> _)
                   else Task.unit
                 } yield ()
-              } yield node
+              } yield weddingofficiant
             }
             .onErrorHandle { f =>
               scribe.error(f.getMessage); throw f
@@ -248,22 +266,27 @@ trait WeddingPlannerService extends LService {
               for {
                 place <- graph.nodes.create(schema.Place)
                 _     <- place --- `@id` --> s"${graph.iri}/place/${place.id}"
-                addressTask <- (for {
+                _ <- (for {
                   postalCode  <- record.get("postcode").filter(_.nonEmpty)
-                  houseNumber <- record.get("nummer").filter(_.nonEmpty)
+                  houseNumber <- record.get("huisnummer").filter(_.nonEmpty)
                 } yield {
                   for {
-                    address <- graph.nodes.upsert(s"${graph.iri}/address/${postalCode}_${houseNumber}",
-                                                  schema.PostalAddress)
+                    address <- graph.nodes.upsert(
+                      s"${graph.iri}/postaladdress/${postalCode.toLowerCase()}_${houseNumber}",
+                      schema.PostalAddress)
                     _ <- Task.gather {
                       Seq(
                         address --- schema.postalCode --> postalCode,
-                        address --- schema.streetAddress --> houseNumber
+                        address --- weddingplanner.ns.houseNumber --> houseNumber
                       ) ++ Seq(
                         record.get("plaats").map(address --- schema.addressLocality --> _),
-                        record.get("straat").map(address --- weddingplanner.ns.streetname --> _)
+                        record.get("straat").map(address --- weddingplanner.ns.streetname --> _),
+                        record
+                          .get("straat")
+                          .map(street => address --- schema.streetAddress --> (street + " " + houseNumber))
                       ).flatten
                     }
+                    _ <- place --- schema.address --> address
                   } yield address
                 }).getOrElse(Task.unit)
                 _ <- Task.gather {
@@ -335,29 +358,34 @@ trait WeddingPlannerService extends LService {
               val ssn = record.get("bsn")
               for {
                 person <- graph.nodes.upsert(s"${graph.iri}/person/nl_${ssn.get}", schema.Person)
-                addressTask <- (for {
+                _ <- (for {
                   postalCode  <- record.get("postcode").filter(_.nonEmpty)
                   houseNumber <- record.get("huisnummer").filter(_.nonEmpty)
                   houseLetter <- record.get("huisletter").filter(_.nonEmpty)
                 } yield {
                   for {
-                    address <- graph.nodes.upsert(s"${graph.iri}/address/${postalCode}_${houseNumber}_${houseLetter}",
-                                                  schema.PostalAddress)
+                    address <- graph.nodes.upsert(
+                      s"${graph.iri}/postaladdress/${postalCode.toLowerCase()}_${houseNumber}_${houseLetter.toLowerCase()}",
+                      schema.PostalAddress)
                     _ <- Task.gather {
                       Seq(
                         address --- schema.postalCode --> postalCode,
-                        address --- schema.streetAddress --> houseNumber,
+                        address --- weddingplanner.ns.houseNumber --> houseNumber,
                         address --- weddingplanner.ns.houseLetter --> houseLetter
                       ) ++ Seq(
                         record.get("woonplaats").map(address --- schema.addressLocality --> _),
+                        record.get("straat").map(address --- weddingplanner.ns.streetname --> _),
+                        record
+                          .get("straat")
+                          .map(street => address --- schema.streetAddress --> (street + " " + houseNumber)),
                         record.get("land").map { country =>
                           graph.nodes.upsert(s"${graph.iri}/country/${country}").flatMap { country =>
                             address --- schema.addressCountry --> country
                           }
-                        },
-                        record.get("straat").map(address --- weddingplanner.ns.streetname --> _)
+                        }
                       ).flatten
                     }
+                    _ <- person --- schema.address --> address
                   } yield address
                 }).getOrElse(Task.unit)
                 ssnPartner = record
@@ -513,6 +541,7 @@ trait WeddingPlannerService extends LService {
       .serve[LApplication.JsonLD :+: Application.Json :+: CNil](personService.labeledApi)
       .serve[LApplication.JsonLD :+: Application.Json :+: CNil](weddingOfficiantService.labeledApi)
       .serve[LApplication.JsonLD :+: Application.Json :+: CNil](placeService.labeledApi)
+      .serve[LApplication.JsonLD :+: Application.Json :+: CNil](addressService.labeledApi)
       .serve[LApplication.JsonLD :+: Application.Json :+: CNil](agetestService.api)
       .serve[LApplication.JsonLD :+: Application.Json :+: CNil](kinsmantestService.api)
       .serve[LApplication.JsonLD :+: Application.Json :+: CNil](partnertestService.api)

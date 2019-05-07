@@ -59,9 +59,6 @@ class WeddingPlannerServiceSpec extends LServiceSpec with BeforeAndAfterAll {
             response.contentType shouldBe Some("application/json")
           }
         }
-//        _ <- Task.deferFuture {
-//          lservice.service(Input.get(s"/agenda/"))
-//        }
       } yield succeed).runToFuture
     }
 
@@ -88,6 +85,28 @@ class WeddingPlannerServiceSpec extends LServiceSpec with BeforeAndAfterAll {
         response.status shouldBe Status.Ok
       }
     }
+    "get /person/nl_000009878" in {
+      import lspace.services.util._
+      val input = Input
+        .get("/person/nl_000009878")
+        .withHeaders("Accept" -> "application/json")
+      val res = WeddingPlannerService.service(input.request)
+
+      res.map { response =>
+        response.status shouldBe Status.Ok
+      }
+    }
+    "get /person/nl_000009878/contactpunt" in {
+      import lspace.services.util._
+      val input = Input
+        .get("/person/nl_000009878/contactpunt")
+        .withHeaders("Accept" -> "application/json")
+      val res = WeddingPlannerService.service(input.request)
+
+      res.map { response =>
+        response.status shouldBe Status.Ok
+      }
+    }
     "return active context for path /agenda/context" in {
       import lspace.services.util._
       val input = Input
@@ -101,25 +120,5 @@ class WeddingPlannerServiceSpec extends LServiceSpec with BeforeAndAfterAll {
       }
     }
 
-    "reset the graph on /clear" in {
-      import lspace.services.util._
-      val input = Input
-        .get("/clear")
-        .withHeaders("Accept" -> "application/json")
-      val res = WeddingPlannerService.service(input.request)
-
-      res.flatMap { response =>
-        Thread.sleep(2000)
-        val input = Input
-          .get("/person")
-          .withHeaders("Accept" -> "application/json")
-        val res = WeddingPlannerService.service(input.request)
-
-        res.map { response =>
-          response.contentString shouldBe "[]"
-          response.status shouldBe Status.Ok
-        }
-      }
-    }
   }
 }
