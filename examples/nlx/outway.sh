@@ -11,4 +11,5 @@ docker run --detach \
      --env TLS_ORG_KEY=/certs/org.key \
      --env DISABLE_LOGDB=1 \
      --publish 4080:80 \
+     --restart unless-stopped \
      nlxio/outway:latest
