@@ -9,49 +9,49 @@
     authorization-model = "none"
 
     [services.WeddingOfficiantDataService]
-        endpoint-url = "http://convenantgemeenten.nl/weddingofficiant"
-        documentation-url = "https://convenantgemeenten.github.io/Weddingplanner-API/endpoints.html"
-        authorization-model = "none"
+    endpoint-url = "http://convenantgemeenten.nl/weddingofficiant"
+    documentation-url = "https://convenantgemeenten.github.io/Weddingplanner-API/endpoints.html"
+    authorization-model = "none"
 
     [services.PersonDataService]
-        endpoint-url = "http://convenantgemeenten.nl/person"
-        documentation-url = "https://convenantgemeenten.github.io/Weddingplanner-API/endpoints.html"
-        authorization-model = "none"
+    endpoint-url = "http://convenantgemeenten.nl/person"
+    documentation-url = "https://convenantgemeenten.github.io/Weddingplanner-API/endpoints.html"
+    authorization-model = "none"
 
     [services.AgendaDataService]
-        endpoint-url = "http://convenantgemeenten.nl/agenda"
-        documentation-url = "https://convenantgemeenten.github.io/Weddingplanner-API/endpoints.html"
-        authorization-model = "none"
+    endpoint-url = "http://convenantgemeenten.nl/agenda"
+    documentation-url = "https://convenantgemeenten.github.io/Weddingplanner-API/endpoints.html"
+    authorization-model = "none"
 
     [services.AppointmentDataService]
-        endpoint-url = "http://convenantgemeenten.nl/appointment"
-        documentation-url = "https://convenantgemeenten.github.io/Weddingplanner-API/endpoints.html"
-        authorization-model = "none"
+    endpoint-url = "http://convenantgemeenten.nl/appointment"
+    documentation-url = "https://convenantgemeenten.github.io/Weddingplanner-API/endpoints.html"
+    authorization-model = "none"
 
     [services.WeddingReservationProcessService]
-        endpoint-url = "http://convenantgemeenten.nl/weddingreservation"
-        documentation-url = "https://convenantgemeenten.github.io/Weddingplanner-API/endpoints.html"
-        authorization-model = "none"
+    endpoint-url = "http://convenantgemeenten.nl/weddingreservation"
+    documentation-url = "https://convenantgemeenten.github.io/Weddingplanner-API/endpoints.html"
+    authorization-model = "none"
 
     [services.ReportOfMarriageProcessService]
-        endpoint-url = "http://convenantgemeenten.nl/reportofmarriage"
-        documentation-url = "https://convenantgemeenten.github.io/Weddingplanner-API/endpoints.html"
-        authorization-model = "none"
+    endpoint-url = "http://convenantgemeenten.nl/reportofmarriage"
+    documentation-url = "https://convenantgemeenten.github.io/Weddingplanner-API/endpoints.html"
+    authorization-model = "none"
 
     [services.KinsmanTestService]
-        endpoint-url = "http://convenantgemeenten.nl/kinsman"
-        documentation-url = "https://convenantgemeenten.github.io/Weddingplanner-API/endpoints.html"
-        authorization-model = "none"
+    endpoint-url = "http://convenantgemeenten.nl/kinsman"
+    documentation-url = "https://convenantgemeenten.github.io/Weddingplanner-API/endpoints.html"
+    authorization-model = "none"
 
     [services.PartnerTestService]
-        endpoint-url = "http://convenantgemeenten.nl/partner"
-        documentation-url = "https://convenantgemeenten.github.io/Weddingplanner-API/endpoints.html"
-        authorization-model = "none"
+    endpoint-url = "http://convenantgemeenten.nl/partner"
+    documentation-url = "https://convenantgemeenten.github.io/Weddingplanner-API/endpoints.html"
+    authorization-model = "none"
 
     [services.AgeTestService]
-        endpoint-url = "http://convenantgemeenten.nl/age"
-        documentation-url = "https://convenantgemeenten.github.io/Weddingplanner-API/endpoints.html"
-        authorization-model = "none"
+    endpoint-url = "http://convenantgemeenten.nl/age"
+    documentation-url = "https://convenantgemeenten.github.io/Weddingplanner-API/endpoints.html"
+    authorization-model = "none"
 
     #api-specification-document-url = "https://petstore.swagger.io/v2/swagger.json"
     # public-support-contact = "support@my-organization.nl"
