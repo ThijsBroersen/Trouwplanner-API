@@ -23,10 +23,13 @@ There are multiple endpoints, each has its own purpose.
 ## Data services
 Data services are the main storage for data. 
 They are support a traditional rest-api to allow for all crud-operations (if authorized).
-All api's are dynamic. The active context is used to deconstruct url-paths. The api's use the following structures:
-GET```http://example.org/{label}/{id}``` or
-GET```http://example.org/{label}/{id}/{property}``` or
-GET```http://example.org/{label}/{id}/{property}/{property}```
+All api's are dynamic. The active context is used to deconstruct url-paths. The api's use the following structures:  
+GET```http://example.org/{label}/{id}```  
+or  
+GET```http://example.org/{label}/{id}/{property}```  
+or  
+GET```http://example.org/{label}/{id}/{property}/{property}```  
+  
 The active context determined where the property-name resolved to and whether is an out-going or an in-coming relation to the object.
 
 ### Address
