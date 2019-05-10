@@ -27,9 +27,18 @@ services:
     networks:
       - frontend
       - backend
+  weddingplanner-frontend:
+    container_name: weddingplanner-frontend
+    image: weddingplanner-frontend-docker:latest
+    restart: always
+    ports:
+      - '80'
+    volumes:
+      - ./demo:/var/www/html
+    networks:
+      - frontend
+      - backend #frontend uses php (serverside) which needs to communicate the backend
 
 networks:
   frontend:
   backend:
-volumes:
-  frontend_data:
