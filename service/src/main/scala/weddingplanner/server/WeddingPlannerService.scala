@@ -72,6 +72,8 @@ trait WeddingPlannerService extends LService {
       "geboorteland"     -> weddingplanner.ns.birthCountry.iri,
       "start"            -> schema.startDate.iri,
       "end"              -> schema.endDate.iri,
+      "startTijd"        -> schema.startDate.iri,
+      "endTijd"          -> schema.endDate.iri,
 //      "partnerIn"        -> weddingplanner.ns.spouses.iri,
       "Huwelijk" -> weddingplanner.ns.Marriage.iri,
       "Babs"     -> weddingplanner.ns.WeddingOfficiant.iri,
@@ -115,9 +117,14 @@ trait WeddingPlannerService extends LService {
                                                            property = weddingplanner.ns.birthCountry),
       schema.startDate.iri -> ActiveProperty(`@type` = `@date` :: Nil, property = schema.startDate),
       schema.endDate.iri   -> ActiveProperty(`@type` = `@date` :: Nil, property = schema.endDate),
+      schema.startTime.iri -> ActiveProperty(`@type` = `@datetime` :: Nil, property = schema.startDate),
+      schema.endTime.iri   -> ActiveProperty(`@type` = `@datetime` :: Nil, property = schema.endDate),
       "partnerIn" -> ActiveProperty(`@type` = schema.Person :: Nil,
                                     `@reverse` = true,
                                     property = weddingplanner.ns.spouses),
+      "agendaVan" -> ActiveProperty(`@type` = schema.Person :: Nil,
+                                    `@reverse` = true,
+                                    property = weddingplanner.ns.agenda),
       weddingplanner.ns.Agenda.keys.appointment.iri -> ActiveProperty(`@type` = weddingplanner.ns.Appointment :: Nil,
                                                                       property =
                                                                         weddingplanner.ns.Agenda.keys.appointment)
