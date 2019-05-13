@@ -29,7 +29,7 @@ services:
       - backend
   weddingplanner-frontend:
     container_name: weddingplanner-frontend
-    image: trouwen-frontend-docker:latest
+    image: weddingplanner-frontend-docker:latest
     restart: always
     ports:
       - '80'
