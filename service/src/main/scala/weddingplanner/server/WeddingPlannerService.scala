@@ -356,7 +356,7 @@ trait WeddingPlannerService extends LService {
 
           val data = reader.allWithHeaders
 
-          val formatter = DateTimeFormatter.ofPattern("MM/dd/YYYY")
+          val formatter = DateTimeFormatter.ofPattern("M/d/YYYY")
 
           Observable
             .fromIterable(data)
