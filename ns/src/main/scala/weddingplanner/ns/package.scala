@@ -14,5 +14,6 @@ package object ns {
   val birthCountry        = Property.properties.getOrCreate("http://ns.convenantgemeenten.nl/birthCountry")
   val spouses             = Property.properties.getOrCreate("http://ns.convenantgemeenten.nl/Marriage/spouses")
 
-  val Marriage = Ontology.ontologies.getOrCreate("http://ns.convenantgemeenten.nl/Marriage")
+  val Marriage       = Ontology.ontologies.getOrCreate("http://ns.convenantgemeenten.nl/Marriage")
+  val LegalRestraint = Ontology.ontologies.getOrCreate("http://ns.convenantgemeenten.nl/LegalRestraint")
 }

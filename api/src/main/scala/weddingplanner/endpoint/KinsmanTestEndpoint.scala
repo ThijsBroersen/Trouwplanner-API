@@ -34,10 +34,10 @@ object KinsmanTestEndpoint {
     ),
     definitions = Map(
       KinsmanTest.keys.person1.iri -> ActiveProperty(`@type` = schema.Person :: Nil,
-                                                     property = KinsmanTest.keys.person1),
+                                                     property = KinsmanTest.keys.person1)(),
       KinsmanTest.keys.person2.iri -> ActiveProperty(`@type` = schema.Person :: Nil,
-                                                     property = KinsmanTest.keys.person2),
-      KinsmanTest.keys.degree.iri -> ActiveProperty(`@type` = `@int` :: Nil, property = KinsmanTest.keys.degree)
+                                                     property = KinsmanTest.keys.person2)(),
+      KinsmanTest.keys.degree.iri -> ActiveProperty(`@type` = `@int` :: Nil, property = KinsmanTest.keys.degree)()
     )
   )
 }
@@ -93,7 +93,7 @@ class KinsmanTestEndpoint(graph: Graph)(implicit val baseDecoder: lspace.codec.N
     get(params[String]("id") :: paramOption[Int]("degree"))
       .mapOutputAsync {
         case (List(person1, person2) :: (degree: Option[Int]) :: HNil) if degree.exists(_ < 1) =>
-          Task.now(NotAcceptable(new Exception("degree must be > 0"))).toIO
+          Task.now(NotAcceptable(new Exception("degree must be > 0"))).to[IO]
         case (List(person1, person2) :: (degree: Option[Int]) :: HNil) =>
           (for {
             p1 <- g.N.hasIri(s"${graph.iri}/person/" + person1).withGraph(graph).headOptionF
@@ -108,8 +108,8 @@ class KinsmanTestEndpoint(graph: Graph)(implicit val baseDecoder: lspace.codec.N
                 .map(_.isDefined)
                 .map(Ok(_))
             else Task.now(NotAcceptable(new Exception("one or both of the wedding couple could not be found")))
-          } yield result).toIO
-        case _ => Task.now(NotAcceptable(new Exception("invalid parameters"))).toIO
+          } yield result).to[IO]
+        case _ => Task.now(NotAcceptable(new Exception("invalid parameters"))).to[IO]
       } :+: post(body[Task[KinsmanTest], lspace.services.codecs.Application.JsonLD :+: Application.Json :+: CNil])
       .mapOutputAsync {
         case task =>
@@ -149,7 +149,7 @@ class KinsmanTestEndpoint(graph: Graph)(implicit val baseDecoder: lspace.codec.N
             .onErrorHandle { f =>
               println(f.getMessage); InternalServerError(new Exception("unknown error with request input"))
             }
-            .toIO
+            .to[IO]
       }
   }
 

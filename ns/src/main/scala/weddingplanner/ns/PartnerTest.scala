@@ -1,6 +1,9 @@
 package weddingplanner.ns
 
+import java.time.LocalDate
+
 import lspace.Label
+import Label.D._
 import lspace.ns.vocab.schema
 import lspace.provider.detached.DetachedGraph
 import lspace.structure.{Node, OntologyDef, Property, PropertyDef, TypedProperty}
@@ -19,6 +22,12 @@ object PartnerTest
     object person
         extends PropertyDef(ontology.iri + "/person", label = "person", `@range` = () => schema.Person.ontology :: Nil)
 
+    object targetDate
+        extends PropertyDef("https://ns.convenantgemeenten.nl/targetDate",
+                            label = "targetDate",
+                            `@range` = () => `@date` :: Nil)
+    lazy val targetDateDate = targetDate as `@date`
+
     object result
         extends PropertyDef(
           ontology.iri + "/result",
@@ -26,18 +35,22 @@ object PartnerTest
           `@extends` = () => Property.properties.getOrCreate("https://schema.org/result", Set()) :: Nil,
           `@range` = () => Label.D.`@boolean` :: Nil
         )
-    lazy val resultBoolean: TypedProperty[Boolean] = result + Label.D.`@boolean`
+    lazy val resultBoolean: TypedProperty[Boolean] = result as Label.D.`@boolean`
   }
-  override lazy val properties: List[Property] = keys.person.property :: keys.result.property :: schema.Thing.properties
+  override lazy val properties
+    : List[Property] = keys.person.property :: keys.targetDate.property :: keys.result.property :: schema.Thing.properties
   trait Properties {
-    lazy val person        = keys.person
-    lazy val result        = keys.result
-    lazy val resultBoolean = keys.resultBoolean
+    lazy val person         = keys.person
+    lazy val targetDate     = keys.targetDate
+    lazy val targetDateDate = keys.targetDateDate
+    lazy val result         = keys.result
+    lazy val resultBoolean  = keys.resultBoolean
   }
 
   def fromNode(node: Node): PartnerTest = {
     PartnerTest(
       node.outE(keys.person.property).map(_.to.iri).toSet,
+      node.out(keys.targetDateDate).headOption,
       node.out(keys.resultBoolean).headOption
     )
   }
@@ -47,10 +60,11 @@ object PartnerTest
       node   <- DetachedGraph.nodes.create(ontology)
       person <- Task.gather(cc.person.map(iri => DetachedGraph.nodes.upsert(iri, Set[String]())))
       _      <- Task.gather(person.map(person => node --- keys.person.property --> person))
+      _      <- cc.targetDate.map(node --- keys.targetDate.property --> _).getOrElse(Task.unit)
       _      <- cc.result.map(result => node --- keys.result --> result).getOrElse(Task.unit)
     } yield node
   }
 }
-case class PartnerTest(person: Set[String], result: Option[Boolean] = None) {
+case class PartnerTest(person: Set[String], targetDate: Option[LocalDate] = None, result: Option[Boolean] = None) {
   lazy val toNode: Task[Node] = this
 }

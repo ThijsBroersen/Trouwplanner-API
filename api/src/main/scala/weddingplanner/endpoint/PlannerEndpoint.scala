@@ -68,7 +68,7 @@ case class PlannerEndpoint[Json](agendaGraph: Graph, personGraph: Graph, placeGr
             //        }
 
             Ok("")
-          }).toIO
+          }).to[IO]
       }
 
   }

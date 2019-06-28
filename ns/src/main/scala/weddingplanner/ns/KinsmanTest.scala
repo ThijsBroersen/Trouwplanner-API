@@ -27,7 +27,7 @@ object KinsmanTest
                             `@range` = () => schema.Person.ontology :: Nil)
     object degree
         extends PropertyDef(ontology.iri + "/degree", label = "degree", `@range` = () => Label.D.`@int` :: Nil)
-    lazy val degreeInt: TypedProperty[Int] = degree + Label.D.`@int`
+    lazy val degreeInt: TypedProperty[Int] = degree as Label.D.`@int`
 
     object result
         extends PropertyDef(
@@ -36,7 +36,7 @@ object KinsmanTest
           `@extends` = () => Property.properties.getOrCreate("https://schema.org/result", Set()) :: Nil,
           `@range` = () => Label.D.`@boolean` :: Nil
         )
-    lazy val resultBoolean: TypedProperty[Boolean] = result + Label.D.`@boolean`
+    lazy val resultBoolean: TypedProperty[Boolean] = result as Label.D.`@boolean`
   }
   override lazy val properties
     : List[Property] = keys.person1.property :: keys.person2.property :: keys.degree.property :: keys.result.property :: schema.Thing.properties

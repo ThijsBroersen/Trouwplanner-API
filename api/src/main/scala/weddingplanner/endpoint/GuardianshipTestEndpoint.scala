@@ -13,36 +13,35 @@ import lspace.ns.vocab.schema
 import lspace.provider.detached.DetachedGraph
 import lspace.services.LApplication
 import monix.eval.Task
-import shapeless.{:+:, CNil, HNil}
-import weddingplanner.ns.AgeTest
+import shapeless.{:+:, ::, CNil, HNil}
+import weddingplanner.ns.GuardianshipTest
 
 import scala.collection.immutable.ListMap
 import scala.util.{Failure, Success, Try}
 
-object AgeTestEndpoint {
+object GuardianshipTestEndpoint {
   def apply(graph: Graph, activeContext: ActiveContext = ActiveContext())(
       implicit baseDecoder: lspace.codec.NativeTypeDecoder,
-      baseEncoder: lspace.codec.NativeTypeEncoder): AgeTestEndpoint =
-    new AgeTestEndpoint(graph)(baseDecoder, baseEncoder, activeContext)
+      baseEncoder: lspace.codec.NativeTypeEncoder): GuardianshipTestEndpoint =
+    new GuardianshipTestEndpoint(graph)(baseDecoder, baseEncoder, activeContext)
 
   lazy val activeContext = ActiveContext(
     `@prefix` = ListMap(
-      "person"     -> AgeTest.keys.person.iri,
-      "minimumAge" -> AgeTest.keys.requiredMinAge.iri,
-      "targetDate" -> AgeTest.keys.targetDate.iri
+      "person"     -> GuardianshipTest.keys.person.iri,
+      "targetDate" -> GuardianshipTest.keys.targetDate.iri
     ),
     definitions = Map(
-      AgeTest.keys.person.iri -> ActiveProperty(`@type` = schema.Person :: Nil, property = AgeTest.keys.person)(),
-      AgeTest.keys.requiredMinAge.iri -> ActiveProperty(`@type` = `@int` :: Nil,
-                                                        property = AgeTest.keys.requiredMinAge)(),
-      AgeTest.keys.targetDate.iri -> ActiveProperty(`@type` = `@date` :: Nil, property = AgeTest.keys.targetDate)()
+      GuardianshipTest.keys.person.iri -> ActiveProperty(`@type` = schema.Person :: Nil,
+                                                         property = GuardianshipTest.keys.person)(),
+      GuardianshipTest.keys.targetDate.iri -> ActiveProperty(`@type` = `@date` :: Nil,
+                                                             property = GuardianshipTest.keys.targetDate)()
     )
   )
 }
 
-class AgeTestEndpoint(graph: Graph)(implicit val baseDecoder: lspace.codec.NativeTypeDecoder,
-                                    val baseEncoder: lspace.codec.NativeTypeEncoder,
-                                    activeContext: ActiveContext)
+class GuardianshipTestEndpoint(graph: Graph)(implicit val baseDecoder: lspace.codec.NativeTypeDecoder,
+                                             val baseEncoder: lspace.codec.NativeTypeEncoder,
+                                             activeContext: ActiveContext)
     extends Endpoint.Module[IO] {
 
   implicit val ec = monix.execution.Scheduler.global
@@ -75,12 +74,12 @@ class AgeTestEndpoint(graph: Graph)(implicit val baseDecoder: lspace.codec.Nativ
     * tests if a kinsman path exists between two
     * TODO: update graph with latest (remote) data
     */
-  val age: Endpoint[IO, Boolean :+: Boolean :+: CNil] = {
+  val guardianship: Endpoint[IO, Boolean :+: Boolean :+: CNil] = {
     implicit val bodyJsonldTyped = DecodeJsonLD
-      .bodyJsonldTyped(AgeTest.ontology, AgeTest.fromNode)
+      .bodyJsonldTyped(GuardianshipTest.ontology, GuardianshipTest.fromNode)
 
     implicit val jsonToNodeToT = DecodeJson
-      .jsonToNodeToT(AgeTest.ontology, AgeTest.fromNode)
+      .jsonToNodeToT(GuardianshipTest.ontology, GuardianshipTest.fromNode)
 
     implicit val decodeDate: DecodeEntity[LocalDate] = new DecodeEntity[LocalDate] {
       def apply(s: String): Either[Throwable, LocalDate] =
@@ -91,15 +90,22 @@ class AgeTestEndpoint(graph: Graph)(implicit val baseDecoder: lspace.codec.Nativ
         }
     }
 
-    import shapeless.::
-    get(param[String]("id") :: param[Int]("minimumAge") :: paramOption[LocalDate]("targetDate"))
+    get(param[String]("id") :: paramOption[LocalDate]("targetDate"))
       .mapOutputAsync {
-        case person :: minimumAge :: targetDate :: HNil =>
+        case person :: targetDate :: HNil =>
+          val targetDate0 = targetDate.getOrElse(LocalDate.now())
           (for {
             result <- g
               .N()
               .hasIri(s"${graph.iri}/person/" + person)
-              .has(schema.birthDate, P.lt(targetDate.getOrElse(LocalDate.now()).minusYears(minimumAge)))
+              .where(
+                _.out(weddingplanner.ns.underLegalRestraint)
+                  .hasLabel(weddingplanner.ns.LegalRestraint)
+                  .has(schema.startDate, P.lt(targetDate0))
+                  .or(
+                    _.has(schema.endDate, P.gt(targetDate0)),
+                    _.hasNot(schema.endDate)
+                  ))
               .head()
               .withGraph(graph)
               .headOptionF
@@ -107,25 +113,32 @@ class AgeTestEndpoint(graph: Graph)(implicit val baseDecoder: lspace.codec.Nativ
               .map(Ok(_))
           } yield result).to[IO]
 //        case _ => Task.now(NotAcceptable(new Exception("invalid parameters"))).to[IO]
-      } :+: post(body[Task[AgeTest], lspace.services.codecs.Application.JsonLD :+: Application.Json :+: CNil])
+      } :+: post(body[Task[GuardianshipTest], lspace.services.codecs.Application.JsonLD :+: Application.Json :+: CNil])
       .mapOutputAsync {
         case task =>
           task
             .flatMap {
-              case ageTest: AgeTest if ageTest.result.isDefined =>
+              case guardianshipTest: GuardianshipTest if guardianshipTest.result.isDefined =>
                 Task.now(NotAcceptable(new Exception("result should not yet be defined")))
-              case ageTest: AgeTest =>
+              case guardianshipTest: GuardianshipTest =>
+                val targetDate = guardianshipTest.targetDate.getOrElse(LocalDate.now())
                 for {
-                  ageSatisfaction <- g.N
-                    .hasIri(ageTest.person)
-                    .has(schema.birthDate,
-                         P.lt(ageTest.targetDate.getOrElse(LocalDate.now()).minusYears(ageTest.requiredMinAge)))
+                  isRelated <- g.N
+                    .hasIri(guardianshipTest.person)
+                    .where(
+                      _.out(weddingplanner.ns.underLegalRestraint)
+                        .hasLabel(weddingplanner.ns.LegalRestraint)
+                        .has(schema.startDate, P.lt(targetDate))
+                        .or(
+                          _.has(schema.endDate, P.gt(targetDate)),
+                          _.hasNot(schema.endDate)
+                        ))
                     .head()
                     .withGraph(graph)
                     .headOptionF
                     .map(_.isDefined)
                 } yield {
-                  Ok(ageSatisfaction)
+                  Ok(isRelated)
                 }
               case _ => Task.now(NotAcceptable(new Exception("invalid parameters")))
             }
@@ -133,7 +146,7 @@ class AgeTestEndpoint(graph: Graph)(implicit val baseDecoder: lspace.codec.Nativ
       }
   }
 
-  val api = "age" :: age
+  val api = "guardianship" :: guardianship
 
   lazy val compiled: Endpoint.Compiled[IO] = {
     type Json = baseEncoder.Json

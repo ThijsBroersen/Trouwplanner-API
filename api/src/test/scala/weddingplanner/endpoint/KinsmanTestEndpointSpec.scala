@@ -146,7 +146,7 @@ class KinsmanTestEndpointSpec extends AsyncWordSpec with Matchers with BeforeAnd
         input = Input
           .post("/kinsman")
           .withBody[LApplication.JsonLD](node)
-        _ <- Task.fromIO(
+        _ <- Task.from(
           kinsmanService
             .compiled(input.request)
             .map {
@@ -167,7 +167,7 @@ class KinsmanTestEndpointSpec extends AsyncWordSpec with Matchers with BeforeAnd
         input = Input
           .post("/kinsman")
           .withBody[LApplication.JsonLD](node)
-        _ <- Task.fromIO(
+        _ <- Task.from(
           kinsmanService
             .compiled(input.request)
             .map {
@@ -188,7 +188,7 @@ class KinsmanTestEndpointSpec extends AsyncWordSpec with Matchers with BeforeAnd
         input = Input
           .post("/kinsman")
           .withBody[LApplication.JsonLD](node)
-        _ <- Task.fromIO(
+        _ <- Task.from(
           kinsmanService
             .compiled(input.request)
             .map {
@@ -209,7 +209,7 @@ class KinsmanTestEndpointSpec extends AsyncWordSpec with Matchers with BeforeAnd
         input = Input
           .post("/kinsman")
           .withBody[LApplication.JsonLD](node)
-        _ <- Task.fromIO(
+        _ <- Task.from(
           kinsmanService
             .compiled(input.request)
             .map {

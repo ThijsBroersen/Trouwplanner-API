@@ -21,7 +21,7 @@ object SigmaJsVisualizer {
         Map(
           "id" -> r.id.asJson,
           "label" -> (r.labels.headOption.flatMap(_.label("en")).getOrElse("") + r.out(
-            lspace.ns.vocab.schema.name + lspace.Label.D.`@string`)).asJson
+            lspace.ns.vocab.schema.name as lspace.Label.D.`@string`)).asJson
         ).asJson
       }
       val edgesJsons = edges.distinct.map { e =>

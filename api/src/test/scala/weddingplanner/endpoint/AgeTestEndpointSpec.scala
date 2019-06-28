@@ -1,5 +1,7 @@
 package weddingplanner.endpoint
 
+import java.time.LocalDate
+
 import com.twitter.finagle.http.Status
 import io.finch.Input
 import lspace.Label.D._
@@ -47,7 +49,7 @@ class AgeTestEndpointSpec extends AsyncWordSpec with Matchers with BeforeAndAfte
       (for {
         sample <- initTask
         yoshio = sample.persons.Yoshio.person
-        test   = AgeTest(yoshio.iri, 18)
+        test   = AgeTest(yoshio.iri, 18, Some(LocalDate.parse("2019-06-28")))
         node <- test.toNode
       } yield {
         val input = Input
@@ -65,11 +67,55 @@ class AgeTestEndpointSpec extends AsyncWordSpec with Matchers with BeforeAndAfte
           .getOrElse(fail("endpoint does not match"))
       }).runToFuture
     }
+    "test positive for a minimum age of 18 for Yoshio via query parameters" in {
+      (for {
+        sample <- initTask
+        yoshio = sample.persons.Yoshio.person
+        test   = AgeTest(yoshio.iri, 18, Some(LocalDate.parse("2019-06-28")))
+        node <- test.toNode
+      } yield {
+        val input = Input
+          .get(s"/age?id=123&minimumAge=18&targetDate=2019-06-28")
+          .withBody[LApplication.JsonLD](node)
+        ageService
+          .age(input)
+          .awaitOutput()
+          .map { output =>
+            output.isRight shouldBe true
+            val response = output.right.get
+            response.status shouldBe Status.Ok
+            response.value.head.get shouldBe true
+          }
+          .getOrElse(fail("endpoint does not match"))
+      }).runToFuture
+    }
+    "test negative for a minimum age of 18 for Yoshio for target date 1855-05-18" in {
+      (for {
+        sample <- initTask
+        yoshio = sample.persons.Yoshio.person
+        test   = AgeTest(yoshio.iri, 18, Some(LocalDate.parse("1855-05-18")))
+        node <- test.toNode
+      } yield {
+        val input = Input
+          .post("/age")
+          .withBody[LApplication.JsonLD](node)
+        ageService
+          .age(input)
+          .awaitOutput()
+          .map { output =>
+            output.isRight shouldBe true
+            val response = output.right.get
+            response.status shouldBe Status.Ok
+            response.value.tail.get.head.get shouldBe false
+          }
+          .getOrElse(fail("endpoint does not match"))
+      }).runToFuture
+    }
     "test negative for a minimun age of 65 for Yoshio" in {
       (for {
         sample <- initTask
         yoshio = sample.persons.Yoshio.person
-        test   = AgeTest(yoshio.iri, 65)
+        test   = AgeTest(yoshio.iri, 65, Some(LocalDate.parse("2019-06-28")))
         node <- test.toNode
       } yield {
         val input = Input
@@ -93,12 +139,12 @@ class AgeTestEndpointSpec extends AsyncWordSpec with Matchers with BeforeAndAfte
       (for {
         sample <- initTask
         yoshio = sample.persons.Yoshio.person
-        test   = AgeTest(yoshio.iri, 18)
+        test   = AgeTest(yoshio.iri, 18, Some(LocalDate.parse("2019-06-28")))
         node <- test.toNode
         input = Input
           .post("/age")
           .withBody[LApplication.JsonLD](node)
-        _ <- Task.fromIO(
+        _ <- Task.from(
           ageService
             .compiled(input.request)
             .map {
@@ -113,12 +159,12 @@ class AgeTestEndpointSpec extends AsyncWordSpec with Matchers with BeforeAndAfte
       (for {
         sample <- initTask
         yoshio = sample.persons.Yoshio.person
-        test   = AgeTest(yoshio.iri, 65)
+        test   = AgeTest(yoshio.iri, 65, Some(LocalDate.parse("2019-06-28")))
         node <- test.toNode
         input = Input
           .post("/age")
           .withBody[LApplication.JsonLD](node)
-        _ <- Task.fromIO(
+        _ <- Task.from(
           ageService
             .compiled(input.request)
             .map {

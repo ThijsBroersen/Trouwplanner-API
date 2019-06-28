@@ -1,11 +1,12 @@
 package weddingplanner.endpoint
 
 import java.net.URLEncoder
-import java.time.Instant
+import java.time.{Instant, LocalDate}
 
 import cats.effect.IO
 import io.finch.Endpoint
 import lspace._
+import Label.D._
 import lspace.codec.{jsonld, ActiveContext, ActiveProperty, NativeTypeDecoder, NativeTypeEncoder}
 import lspace.decode.{DecodeJson, DecodeJsonLD}
 import lspace.encode.{EncodeJson, EncodeJsonLD, EncodeText}
@@ -27,10 +28,14 @@ object PartnerTestEndpoint {
 
   lazy val activeContext = ActiveContext(
     `@prefix` = ListMap(
-      "person" -> PartnerTest.keys.person.iri
+      "person"     -> PartnerTest.keys.person.iri,
+      "targetDate" -> PartnerTest.keys.targetDate.iri
     ),
     definitions = Map(
-      PartnerTest.keys.person.iri -> ActiveProperty(`@type` = schema.Person :: Nil, property = PartnerTest.keys.person)
+      PartnerTest.keys.person.iri -> ActiveProperty(`@type` = schema.Person :: Nil,
+                                                    property = PartnerTest.keys.person)(),
+      PartnerTest.keys.targetDate.iri -> ActiveProperty(`@type` = `@date` :: Nil,
+                                                        property = PartnerTest.keys.targetDate)()
     )
   )
 }
@@ -83,43 +88,68 @@ class PartnerTestEndpoint(graph: Graph)(implicit val baseDecoder: lspace.codec.N
     implicit val jsonToNodeToT = DecodeJson
       .jsonToNodeToT(PartnerTest.ontology, PartnerTest.fromNode)
 
-    get(params[String]("id"))
+    implicit val decodeDate: DecodeEntity[LocalDate] = new DecodeEntity[LocalDate] {
+      def apply(s: String): Either[Throwable, LocalDate] =
+        try {
+          Right(LocalDate.parse(s))
+        } catch {
+          case e: Throwable => Left(e)
+        }
+    }
+
+    get(params[String]("id") :: paramOption[LocalDate]("targetDate"))
       .mapOutputAsync {
-        case Nil =>
-          Task.now(NotAcceptable(new Exception("a partnertest must have persons as input"))).toIO
-        case persons =>
+        case Nil :: targetDate :: HNil =>
+          Task.now(NotAcceptable(new Exception("a partnertest must have persons as input"))).to[IO]
+        case persons :: targetDate :: HNil =>
+          val targetDate0 = targetDate.getOrElse(LocalDate.now())
           (for {
             result <- g
               .N()
               .hasIri(persons.toSet.map(person => s"${graph.iri}/person/" + person))
-              .has(schema.spouse)
+              .where(
+                _.in(weddingplanner.ns.spouses)
+                  .has(schema.startDate, P.lt(targetDate0))
+                  .or(
+                    _.has(schema.endDate, P.gt(targetDate0)),
+                    _.hasNot(schema.endDate)
+                  ))
               .head()
               .withGraph(graph)
               .headOptionF
               .map(_.isDefined)
               .map(Ok(_))
-          } yield result).toIO
-//        case _ => Task.now(NotAcceptable(new Exception("invalid parameters"))).toIO
+          } yield result).to[IO]
+//        case _ => Task.now(NotAcceptable(new Exception("invalid parameters"))).to[IO]
       } :+: post(body[Task[PartnerTest], lspace.services.codecs.Application.JsonLD :+: Application.Json :+: CNil])
       .mapOutputAsync {
         case task =>
-          task.flatMap {
-            case partnerTest: PartnerTest if partnerTest.result.isDefined =>
-              Task.now(NotAcceptable(new Exception("result should not yet be defined")))
-            case partnerTest: PartnerTest =>
-              for {
-                isRelated <- g.N
-                  .hasIri(partnerTest.person)
-                  .has(schema.spouse)
-                  .head()
-                  .withGraph(graph)
-                  .headOptionF
-                  .map(_.isDefined)
-              } yield {
-                Ok(isRelated)
-              }
-            case _ => Task.now(NotAcceptable(new Exception("invalid parameters")))
-          }.toIO
+          task
+            .flatMap {
+              case partnerTest: PartnerTest if partnerTest.result.isDefined =>
+                Task.now(NotAcceptable(new Exception("result should not yet be defined")))
+              case partnerTest: PartnerTest =>
+                val targetDate = partnerTest.targetDate.getOrElse(LocalDate.now())
+                for {
+                  isRelated <- g.N
+                    .hasIri(partnerTest.person)
+                    .where(
+                      _.in(weddingplanner.ns.spouses)
+                        .has(schema.startDate, P.lt(targetDate))
+                        .or(
+                          _.has(schema.endDate, P.gt(targetDate)),
+                          _.hasNot(schema.endDate)
+                        ))
+                    .head()
+                    .withGraph(graph)
+                    .headOptionF
+                    .map(_.isDefined)
+                } yield {
+                  Ok(isRelated)
+                }
+              case _ => Task.now(NotAcceptable(new Exception("invalid parameters")))
+            }
+            .to[IO]
       }
   }
 

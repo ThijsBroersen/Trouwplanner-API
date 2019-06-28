@@ -81,53 +81,53 @@ trait WeddingPlannerService extends LService {
       "afspraak" -> weddingplanner.ns.Agenda.keys.appointment.iri
     ),
     definitions = Map(
-      schema.name.iri       -> ActiveProperty(`@type` = `@string` :: Nil, property = schema.name),
-      schema.givenName.iri  -> ActiveProperty(`@type` = `@string` :: Nil, property = schema.givenName),
-      schema.familyName.iri -> ActiveProperty(`@type` = `@string` :: Nil, property = schema.familyName),
+      schema.name.iri       -> ActiveProperty(`@type` = `@string` :: Nil, property = schema.name)(),
+      schema.givenName.iri  -> ActiveProperty(`@type` = `@string` :: Nil, property = schema.givenName)(),
+      schema.familyName.iri -> ActiveProperty(`@type` = `@string` :: Nil, property = schema.familyName)(),
       weddingplanner.ns.prepositionName.iri -> ActiveProperty(`@type` = `@string` :: Nil,
-                                                              property = weddingplanner.ns.prepositionName),
-      schema.birthDate.iri    -> ActiveProperty(`@type` = `@date` :: Nil, property = schema.birthDate),
-      schema.birthPlace.iri   -> ActiveProperty(`@type` = schema.Place :: Nil, property = schema.birthPlace),
-      schema.description.iri  -> ActiveProperty(`@type` = `@string` :: Nil, property = schema.description),
-      schema.email.iri        -> ActiveProperty(`@type` = `@string` :: Nil, property = schema.email),
-      schema.telephone.iri    -> ActiveProperty(`@type` = `@string` :: Nil, property = schema.telephone),
-      schema.contactPoint.iri -> ActiveProperty(`@type` = schema.ContactPoint :: Nil, property = schema.contactPoint),
+                                                              property = weddingplanner.ns.prepositionName)(),
+      schema.birthDate.iri    -> ActiveProperty(`@type` = `@date` :: Nil, property = schema.birthDate)(),
+      schema.birthPlace.iri   -> ActiveProperty(`@type` = schema.Place :: Nil, property = schema.birthPlace)(),
+      schema.description.iri  -> ActiveProperty(`@type` = `@string` :: Nil, property = schema.description)(),
+      schema.email.iri        -> ActiveProperty(`@type` = `@string` :: Nil, property = schema.email)(),
+      schema.telephone.iri    -> ActiveProperty(`@type` = `@string` :: Nil, property = schema.telephone)(),
+      schema.contactPoint.iri -> ActiveProperty(`@type` = schema.ContactPoint :: Nil, property = schema.contactPoint)(),
       schema.maximumAttendeeCapacity.iri -> ActiveProperty(`@type` = `@int` :: Nil,
-                                                           property = schema.maximumAttendeeCapacity),
-      schema.price.iri          -> ActiveProperty(`@type` = `@double` :: Nil, property = schema.price),
-      schema.url.iri            -> ActiveProperty(`@type` = `@string` :: Nil, property = schema.url),
-      weddingplanner.ns.ssn.iri -> ActiveProperty(`@type` = `@string` :: Nil, property = weddingplanner.ns.ssn),
-      schema.streetAddress.iri  -> ActiveProperty(`@type` = `@string` :: Nil, property = schema.streetAddress),
-      schema.postalCode.iri     -> ActiveProperty(`@type` = `@string` :: Nil, property = schema.postalCode),
+                                                           property = schema.maximumAttendeeCapacity)(),
+      schema.price.iri          -> ActiveProperty(`@type` = `@double` :: Nil, property = schema.price)(),
+      schema.url.iri            -> ActiveProperty(`@type` = `@string` :: Nil, property = schema.url)(),
+      weddingplanner.ns.ssn.iri -> ActiveProperty(`@type` = `@string` :: Nil, property = weddingplanner.ns.ssn)(),
+      schema.streetAddress.iri  -> ActiveProperty(`@type` = `@string` :: Nil, property = schema.streetAddress)(),
+      schema.postalCode.iri     -> ActiveProperty(`@type` = `@string` :: Nil, property = schema.postalCode)(),
       weddingplanner.ns.streetname.iri -> ActiveProperty(`@type` = `@string` :: Nil,
-                                                         property = weddingplanner.ns.streetname),
+                                                         property = weddingplanner.ns.streetname)(),
       weddingplanner.ns.houseLetter.iri -> ActiveProperty(`@type` = `@string` :: Nil,
-                                                          property = weddingplanner.ns.houseLetter),
+                                                          property = weddingplanner.ns.houseLetter)(),
       weddingplanner.ns.houseNumber.iri -> ActiveProperty(`@type` = `@string` :: Nil,
-                                                          property = weddingplanner.ns.houseNumber),
-      schema.addressLocality.iri -> ActiveProperty(`@type` = schema.Place :: Nil, property = schema.addressLocality),
-      schema.addressCountry.iri  -> ActiveProperty(`@type` = schema.Country :: Nil, property = schema.addressCountry),
+                                                          property = weddingplanner.ns.houseNumber)(),
+      schema.addressLocality.iri -> ActiveProperty(`@type` = schema.Place :: Nil, property = schema.addressLocality)(),
+      schema.addressCountry.iri  -> ActiveProperty(`@type` = schema.Country :: Nil, property = schema.addressCountry)(),
       weddingplanner.ns.underLegalRestraint.iri -> ActiveProperty(`@type` = `@boolean` :: Nil,
-                                                                  property = weddingplanner.ns.underLegalRestraint),
-      schema.image.iri -> ActiveProperty(`@type` = `@string` :: Nil, property = schema.image),
+                                                                  property = weddingplanner.ns.underLegalRestraint)(),
+      schema.image.iri -> ActiveProperty(`@type` = `@string` :: Nil, property = schema.image)(),
       weddingplanner.ns.civilStatus.iri -> ActiveProperty(`@type` = `@string` :: Nil,
-                                                          property = weddingplanner.ns.civilStatus),
-      schema.nationality.iri -> ActiveProperty(`@type` = `@string` :: Nil, property = schema.nationality),
+                                                          property = weddingplanner.ns.civilStatus)(),
+      schema.nationality.iri -> ActiveProperty(`@type` = `@string` :: Nil, property = schema.nationality)(),
       weddingplanner.ns.birthCountry.iri -> ActiveProperty(`@type` = schema.Country :: Nil,
-                                                           property = weddingplanner.ns.birthCountry),
-      schema.startDate.iri -> ActiveProperty(`@type` = `@date` :: Nil, property = schema.startDate),
-      schema.endDate.iri   -> ActiveProperty(`@type` = `@date` :: Nil, property = schema.endDate),
-      schema.startTime.iri -> ActiveProperty(`@type` = `@datetime` :: Nil, property = schema.startDate),
-      schema.endTime.iri   -> ActiveProperty(`@type` = `@datetime` :: Nil, property = schema.endDate),
+                                                           property = weddingplanner.ns.birthCountry)(),
+      schema.startDate.iri -> ActiveProperty(`@type` = `@date` :: Nil, property = schema.startDate)(),
+      schema.endDate.iri   -> ActiveProperty(`@type` = `@date` :: Nil, property = schema.endDate)(),
+      schema.startTime.iri -> ActiveProperty(`@type` = `@datetime` :: Nil, property = schema.startDate)(),
+      schema.endTime.iri   -> ActiveProperty(`@type` = `@datetime` :: Nil, property = schema.endDate)(),
       "partnerIn" -> ActiveProperty(`@type` = schema.Person :: Nil,
                                     `@reverse` = true,
-                                    property = weddingplanner.ns.spouses),
+                                    property = weddingplanner.ns.spouses)(),
       "agendaVan" -> ActiveProperty(`@type` = schema.Person :: Nil,
                                     `@reverse` = true,
-                                    property = weddingplanner.ns.agenda),
+                                    property = weddingplanner.ns.agenda)(),
       weddingplanner.ns.Agenda.keys.appointment.iri -> ActiveProperty(`@type` = weddingplanner.ns.Appointment :: Nil,
                                                                       property =
-                                                                        weddingplanner.ns.Agenda.keys.appointment)
+                                                                        weddingplanner.ns.Agenda.keys.appointment)()
     )
   )
 
@@ -141,9 +141,10 @@ trait WeddingPlannerService extends LService {
   lazy val weddingReservationService = WeddingReservationEndpoint(graph, defaultContext)
   lazy val reportToMarriageService   = ReportToMarriageEndpoint(graph, defaultContext)
 
-  lazy val agetestService     = AgeTestEndpoint(graph, AgeTestEndpoint.activeContext)
-  lazy val kinsmantestService = KinsmanTestEndpoint(graph, KinsmanTestEndpoint.activeContext)
-  lazy val partnertestService = PartnerTestEndpoint(graph, PartnerTestEndpoint.activeContext)
+  lazy val agetestService      = AgeTestEndpoint(graph, AgeTestEndpoint.activeContext)
+  lazy val kinsmantestService  = KinsmanTestEndpoint(graph, KinsmanTestEndpoint.activeContext)
+  lazy val partnertestService  = PartnerTestEndpoint(graph, PartnerTestEndpoint.activeContext)
+  lazy val guardianshipService = GuardianshipTestEndpoint(graph, GuardianshipTestEndpoint.activeContext)
 
   implicit val encoder: lspace.codec.jsonld.Encoder = lspace.codec.jsonld.Encoder(nativeEncoder)
   import lspace.services.codecs.Encode._
@@ -171,16 +172,19 @@ trait WeddingPlannerService extends LService {
 
           val data = reader.allWithHeaders
 
-          val formatter = DateTimeFormatter.ofPattern("MM/dd/YYYY")
+          val formatter = DateTimeFormatter.ofPattern("M/d/yyyy")
           Observable
             .fromIterable(data)
             .map(_.filter(_._2.nonEmpty))
             .mapEval { record =>
               for {
-                weddingofficiant <- graph.nodes.create(WeddingOfficiant)
+                weddingofficiant <- graph.nodes.create(WeddingOfficiant) //TODO: add @id
                 _ <- (for {
-                  postalCode  <- record.get("postcode").filter(_.nonEmpty)
-                  houseNumber <- record.get("huisnummer").filter(_.nonEmpty)
+                  postalCode <- record
+                    .get("postcode")
+                    .map(_.stripMargin.toUpperCase().replaceAll(" ", ""))
+                    .filter(_.nonEmpty)
+                  houseNumber <- record.get("huisnummer").map(_.stripMargin.replaceAll(" ", "")).filter(_.nonEmpty)
                 } yield {
                   for {
                     address <- graph.nodes.upsert(
@@ -274,8 +278,11 @@ trait WeddingPlannerService extends LService {
                 place <- graph.nodes.create(schema.Place)
                 _     <- place --- `@id` --> s"${graph.iri}/place/${place.id}"
                 _ <- (for {
-                  postalCode  <- record.get("postcode").filter(_.nonEmpty)
-                  houseNumber <- record.get("huisnummer").filter(_.nonEmpty)
+                  postalCode <- record
+                    .get("postcode")
+                    .map(_.stripMargin.toUpperCase().replaceAll(" ", ""))
+                    .filter(_.nonEmpty)
+                  houseNumber <- record.get("huisnummer").map(_.stripMargin.replaceAll(" ", "")).filter(_.nonEmpty)
                 } yield {
                   for {
                     address <- graph.nodes.upsert(
@@ -356,7 +363,7 @@ trait WeddingPlannerService extends LService {
 
           val data = reader.allWithHeaders
 
-          val formatter = DateTimeFormatter.ofPattern("M/d/YYYY")
+          val formatter = DateTimeFormatter.ofPattern("M/d/yyyy")
 
           Observable
             .fromIterable(data)
@@ -366,9 +373,12 @@ trait WeddingPlannerService extends LService {
               for {
                 person <- graph.nodes.upsert(s"${graph.iri}/person/nl_${ssn.get}", schema.Person)
                 _ <- (for {
-                  postalCode  <- record.get("postcode").filter(_.nonEmpty)
-                  houseNumber <- record.get("huisnummer").filter(_.nonEmpty)
-                  houseLetter <- record.get("huisletter").filter(_.nonEmpty)
+                  postalCode <- record
+                    .get("postcode")
+                    .map(_.stripMargin.toUpperCase().replaceAll(" ", ""))
+                    .filter(_.nonEmpty)
+                  houseNumber <- record.get("huisnummer").map(_.stripMargin.replaceAll(" ", "")).filter(_.nonEmpty)
+                  houseLetter <- record.get("huisletter").map(_.stripMargin.replaceAll(" ", "")).filter(_.nonEmpty)
                 } yield {
                   for {
                     address <- graph.nodes.upsert(
@@ -447,8 +457,12 @@ trait WeddingPlannerService extends LService {
                       .map(v => person --- weddingplanner.ns.prepositionName --> v),
                     record
                       .get("geboortedatum")
-                      .flatMap(v => Try(java.time.LocalDate.parse(v, formatter)).toOption)
-                      .map(v => person --- schema.birthDate --> v),
+                      .flatMap { v =>
+                        Try(java.time.LocalDate.parse(v, formatter)).toOption
+                      }
+                      .map { v =>
+                        person --- schema.birthDate --> v
+                      },
                     record
                       .get("geboorteplaats")
                       .map(v => person --- schema.birthPlace --> v), //TODO: resolve to real place
@@ -517,7 +531,7 @@ trait WeddingPlannerService extends LService {
     val sigmajs: Endpoint[IO, String] = get(path("sigmajs")).mapOutputAsync { hn =>
       (for {
         data <- SigmaJsVisualizer.visualizeGraph(graph)
-      } yield Ok(data)).toIO
+      } yield Ok(data)).to[IO]
     }
 
     val persist: Endpoint[IO, Unit] = get("_persist") {
@@ -552,6 +566,7 @@ trait WeddingPlannerService extends LService {
       .serve[LApplication.JsonLD :+: Application.Json :+: CNil](agetestService.api)
       .serve[LApplication.JsonLD :+: Application.Json :+: CNil](kinsmantestService.api)
       .serve[LApplication.JsonLD :+: Application.Json :+: CNil](partnertestService.api)
+      .serve[LApplication.JsonLD :+: Application.Json :+: CNil](guardianshipService.api)
       .serve[LApplication.JsonLD :+: Application.Json :+: CNil](reportToMarriageService.api)
       .serve[LApplication.JsonLD :+: Application.Json :+: CNil](weddingReservationService.api)
       .serve[LApplication.JsonLD :+: Application.Json :+: CNil](
