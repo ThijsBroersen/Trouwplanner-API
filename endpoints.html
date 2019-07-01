@@ -28,11 +28,14 @@
 <h2 id="data-services">Data services</h2>
 <p>Data services are the main storage for data. 
 They are support a traditional rest-api to allow for all crud-operations (if authorized).
-All api’s are dynamic. The active context is used to deconstruct url-paths. The api’s use the following structures:
-GET<code class="highlighter-rouge">http://example.org/{label}/{id}</code> or
-GET<code class="highlighter-rouge">http://example.org/{label}/{id}/{property}</code> or
-GET<code class="highlighter-rouge">http://example.org/{label}/{id}/{property}/{property}</code>
-The active context determined where the property-name resolved to and whether is an out-going or an in-coming relation to the object.</p>
+All api’s are dynamic. The active context is used to deconstruct url-paths. The api’s use the following structures:<br />
+GET<code class="highlighter-rouge">http://example.org/{label}/{id}</code><br />
+or<br />
+GET<code class="highlighter-rouge">http://example.org/{label}/{id}/{property}</code><br />
+or<br />
+GET<code class="highlighter-rouge">http://example.org/{label}/{id}/{property}/{property}</code></p>
+
+<p>The active context determined where the property-name resolved to and whether is an out-going or an in-coming relation to the object.</p>
 
 <h3 id="address">Address</h3>
 <p>The address-endpoint is an service which registers addresses.
@@ -86,21 +89,30 @@ body <code class="highlighter-rouge">{"person2":{"@id":"http://$host/person/$id1
 <p>This service can test whether either person have a partner (active marriage).
 It returns a boolean (<code class="highlighter-rouge">Content-Type: text/boolean</code>)
 Request structure:
-GET<code class="highlighter-rouge">/partner?id={id1},{id2}</code><br />
+GET<code class="highlighter-rouge">/partner?id={id1},{id2}&amp;targetDate={targetDate}</code><br />
 or<br />
-GET<code class="highlighter-rouge">/partner?id={id1}&amp;id={id2}</code><br />
+GET<code class="highlighter-rouge">/partner?id={id1}&amp;id={id2}&amp;targetDate={targetDate}</code><br />
 or<br />
 POST <code class="highlighter-rouge">/partner</code><br />
-body <code class="highlighter-rouge">{"person":[{"@id":"http://$host/person/$id1"},{"@id":"http://$host/person/$id2"}]}</code></p>
+body <code class="highlighter-rouge">{"person":[{"@id":"http://$host/person/$id1"},{"@id":"http://$host/person/$id2"}],"targetDate":"2019-09-09"}</code></p>
 
 <h3 id="age">Age</h3>
 <p>This service can test if a persons satisfies certain age constraints.
 It returns a boolean (<code class="highlighter-rouge">Content-Type: text/boolean</code>)
 Request structure:
-GET<code class="highlighter-rouge">/age?id={id}&amp;minimumAge={age}</code><br />
+GET<code class="highlighter-rouge">/age?id={id}&amp;minimumAge={age}&amp;targetDate={targetDate}</code><br />
 or<br />
 POST <code class="highlighter-rouge">/age</code><br />
-body <code class="highlighter-rouge">{"person":{"@id":"http://$host/person/$id1"},"minimumAge":18}</code></p>
+body <code class="highlighter-rouge">{"person":{"@id":"http://$host/person/$id1"},"minimumAge":18,"targetDate":"2019-09-09"}</code></p>
+
+<h3 id="guardianship">Guardianship</h3>
+<p>This service can test if a person is under a guardianship.
+It returns a boolean (<code class="highlighter-rouge">Content-Type: text/boolean</code>)
+Request structure:
+GET<code class="highlighter-rouge">/guardianship?id={id}&amp;targetDate={targetDate}</code><br />
+or<br />
+POST <code class="highlighter-rouge">/guardianship</code><br />
+body <code class="highlighter-rouge">{"person":{"@id":"http://$host/person/$id1"},"targetDate":"2019-09-09"}</code></p>
 </section></div></div></div></div><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script><script src="/Weddingplanner-API/highlight/highlight.pack.js"></script><script>hljs.configure({languages:['scala','java','bash']});
 hljs.initHighlighting();
               </script><script>((window.gitter = {}).chat = {}).options = {
